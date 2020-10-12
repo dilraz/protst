@@ -3,7 +3,10 @@ import Video from 'twilio-video';
 import Participant from './Participant';
 import './Video.css'
 
-const Room = ({ roomName, token, handleLogout }) => {
+const Room = ({ props,roomName, token, handleLogout }) => {
+  
+
+  
   const [room, setRoom] = useState(null);
   const [participants, setParticipants] = useState([]);
 

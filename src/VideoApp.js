@@ -3,8 +3,16 @@ import './Video.css';
 import './App.css'
 import VideoChat from './VideoChat';
 
-const VideoApp = () => {
-  return (
+class VideoApp extends React.Component {
+  constructor(props) {
+    super(props);
+    const reactStringReplace = require('react-string-replace')
+   const roomName =  reactStringReplace(this.props.match.params.name, "%20", () => " ");
+    }
+    
+render()
+{
+ return (
     <div className="App">
       <nav className="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
       <div className="container">
@@ -41,7 +49,8 @@ const VideoApp = () => {
 <div className="row">
   
  
-  <VideoChat />
+  <VideoChat
+  name = {this.props.match.params.name}/>
 
 </div>
 
@@ -50,6 +59,7 @@ const VideoApp = () => {
 </div>
   
   );
+}
 };
 
 

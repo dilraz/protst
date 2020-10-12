@@ -2,10 +2,10 @@ import React, {Component} from 'react';
 import '../App.css';
 import fire from '../fire';
 import firebase from 'firebase';
+import handleLogout from './SignIn'
 
-class Members extends React.Component {
+class Members  extends React.Component  {
   constructor(props) {
-      
       super(props);
      
       this.state = {userslist : []}
@@ -60,6 +60,9 @@ class Members extends React.Component {
     <li className="nav-item">
       <a className="nav-link js-scroll-trigger" href="#contact">Contact</a>
           </li>
+          <li className="nav-item">
+      <a className="nav-link js-scroll-trigger" href="#contact" onClick={handleLogout}>Logout</a>
+          </li>     
         </ul>
       </div>
     </div>

@@ -1,6 +1,6 @@
 {
   "name": "protst_app",
-  "homepage":"https://protst-web-app.000webhostapp.com/",
+  "homepage": "https://protst-web-app.000webhostapp.com/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -17,8 +17,8 @@
     "react-hooks": "^1.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
+    "react-string-replace": "^0.4.4",
     "twilio-video": "^2.2.0"
-    
   },
   "scripts": {
     "start": "react-scripts start",

@@ -4,10 +4,13 @@
   text-align: center;
 }
 
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
+
+
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
@@ -37,5 +40,30 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+
+.post-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.post{
+  margin: 0 auto;
+  max-width: 640px;
+  /*box-shadow: 0 6px 12px rgba(0,0,0,.175);*/
+}
+
+.post-list .post {
+  margin: 0 auto 60px auto;
+}
+
+.post.panel .panel-body {
+  padding: 0;
+}
+
+.post.panel .panel-body figcaption.lead {
+  padding: 15px 15px 0 15px;
 }
 

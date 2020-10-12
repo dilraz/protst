@@ -1,33 +1,33 @@
 import React, {Component} from 'react';
 import '../App.css';
-import fire from '../fire';
 import firebase from 'firebase';
-import '../assets/css/cards.css'
+import Autopilot from 'twilio/lib/rest/Autopilot';
 
-class Campaigns extends React.Component {
-    
+class CampaignSingle  extends React.Component  {
   constructor(props) {
-      
       super(props);
      
-      this.state = {campaignslist : []}
+      this.state = {campaign : []}
       }
       
-      componentDidMount=()=>{
-        const campaignsRef = firebase.firestore().collection('campaigns');
-campaignsRef.onSnapshot((snapshot) => {
-    
-    const data = snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    console.log("All data in 'books' collection", data);
-    this.setState({campaignslist:data})
+    componentDidMount() {
+     
+      const campaignsRef = firebase.firestore().collection('campaigns');
+      campaignsRef.doc(this.props.match.params.id).onSnapshot((snapshot) => {
+          
+          const data = snapshot.data()
+          this.setState({ campaign: snapshot.data() });
+          console.log("All data in 'books' collection", this.state.campaign);
+        }
+      )
+        
+        };
+      
     
 
-})
-        
-      }
+   
+    
+  
     
     
  render(){
@@ -60,68 +60,43 @@ campaignsRef.onSnapshot((snapshot) => {
     <li className="nav-item">
       <a className="nav-link js-scroll-trigger" href="#contact">Contact</a>
           </li>
+            
         </ul>
       </div>
     </div>
   </nav>
-<section>
-   {/* <table id="example" class="display table">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Name</th>
-                    <th>Location</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-            {this.state.campaignslist.map(data => {
-                
-                return (
-                    <tr>     
-                    <td>{data.name}</td>
-                    <td>{data.location}</td>
-                    <td>{data.description}</td>
-                    <td>{data.photoUrl}</td>
-                    </tr>
-                    
-                );
-               
-                })}
+  <br/><br/>
+  <section className="page-section">
+    <div className="row">
+  <div className="col-lg-8">
+
+<div class="text-center">
+  <h2 class="section-heading text-uppercase">{this.state.campaign.name}</h2>
+   </div>
+ 
+  <p className="lead">{this.state.campaign.location}</p>
+  <img style={{border:"2px solid black"} } className="img-fluid" src={this.state.campaign.photoUrl}  />
+ <br/><br/>
+ <p className="text-muted lead" style={{width:"90%",margin:"auto"}} >{this.state.campaign.description}</p> 
         
-               
-            </tbody>
-            
-         </table>  */}
+         </div>
+
+         <div className="col-md-3">
+<div className="card my-4">
+<div className="card-header">Create a Video Group</div>
+<div class="card-body">
+  <div className="input-group">
+    <p class="text-muted">Click below to join the video conference</p>
+    <a className="btn btn-warning" href={"/videoGroup/" + this.state.campaign.name} >Join Now!</a>
+  </div>
+</div>
+</div>
 
 
-<div className="col-lg-12 text-center">
-    <h2 className="section-heading text-uppercase">Active Campaigns</h2>
-    <h4 className="section-subheading text-muted">Find out more about these active campaigns by clicking on the button below</h4>
-  </div>
-  <br/>
- 
- 
-    <div class="card-deck">
-    {this.state.campaignslist.map(data => {
-                return (
-  <div className="card text-black bg-light mb-3">
-    <img className="card-img-top" src={data.photoUrl}  height="300"/>
-    <div className="card-body">
-      <h5 className="card-title">{data.name}</h5>
-      <p className="card-text">{data.description}</p>
-    </div>
-    <a style={{color:"black"}} href={"/viewCampaign/" + data.id}>
-    <div class="card-footer">
-      <h4>View More</h4>
-    </div></a>
-  </div>
- );
-               
-})}
-      </div>
+         </div>
+         </div>
          </section>
-        
-       
+         
   <footer className="footer">
     <div className="container">
       <div className="row align-items-center">
@@ -166,4 +141,4 @@ campaignsRef.onSnapshot((snapshot) => {
 }
 
 
-export default Campaigns;
+export default CampaignSingle;

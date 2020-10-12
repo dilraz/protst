@@ -7,6 +7,7 @@ const Lobby = ({
   handleRoomNameChange,
   handleSubmit
 }) => {
+  
   return (
     <form onSubmit={handleSubmit}>
     <div className="col-lg-12 text-center">
@@ -31,7 +32,7 @@ const Lobby = ({
           id="room"
           value={roomName}
           onChange={handleRoomNameChange}
-          required
+          disabled
         />
       </div>
 

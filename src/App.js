@@ -3,9 +3,12 @@ import './App.css';
 import {Router} from 'react-router-dom';
 import history from './services/history';
 import Routes from './routes';
+import firebase from "firebase";
 
 function App() {
+ 
   
+
   return (
     <Router history = {history}>
     <Routes />

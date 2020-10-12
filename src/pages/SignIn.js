@@ -4,11 +4,11 @@ import fire from "../fire";
 import Login from '../Login';
 import Hero from '../Hero';
 import firebase from "firebase";
-import { Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
+import Members from "./Members"
 
 function SignIn() {
   const [name, setName] = useState('');
-  
   const [user, setUser] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -16,7 +16,7 @@ function SignIn() {
   const [passwordError, setPasswordError]= useState('');
   const [hasAccount, setHasAccount]= useState(false);
   
-  
+  var history = useHistory();
   const changeName = ()=>  {
     document.getElementById("labelname").hidden = true;
     document.getElementById("name-input").hidden = true;
@@ -249,7 +249,8 @@ function SignIn() {
   </div>
  
 {user ? (
-<Hero handleLogout={handleLogout} />
+
+ <Hero handleLogout={handleLogout}/>
 ) : (  
 
     <Login 

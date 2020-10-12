@@ -2,7 +2,9 @@ import React from 'react';
 import './App.css';
 import email from './pages/SignIn'
 
+
 const Hero = ({handleLogout}) => {
+
   return (
     
     <div className="App">

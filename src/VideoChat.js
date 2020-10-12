@@ -2,10 +2,13 @@ import React, { useState, useCallback } from 'react';
 import Lobby from './Lobby';
 import Room from './Room';
 
-const VideoChat = () => {
+const VideoChat = (props) => {
+
+  const campaign = props
   const [username, setUsername] = useState('');
   const [roomName, setRoomName] = useState('');
   const [token, setToken] = useState(null);
+
 
   const handleUsernameChange = useCallback(event => {
     setUsername(event.target.value);
@@ -40,13 +43,14 @@ const VideoChat = () => {
   let render;
   if (token) {
     render = (
-      <Room roomName={roomName} token={token} handleLogout={handleLogout} />
+      <Room roomName={campaign.name} token={token} handleLogout={handleLogout} />
     );
   } else {
     render = (
       <Lobby
+      props={props}
         username={username}
-        roomName={roomName}
+        roomName={campaign.name}
         handleUsernameChange={handleUsernameChange}
         handleRoomNameChange={handleRoomNameChange}
         handleSubmit={handleSubmit}
