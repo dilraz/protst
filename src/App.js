@@ -5,16 +5,19 @@ import history from './services/history';
 import Routes from './routes';
 import firebase from "firebase";
 
-function App() {
+class App extends React.Component {
  
-  
-
+  state = {
+    loggedIn: false,
+  };
+render(){
   return (
     <Router history = {history}>
     <Routes />
     </Router>
   
   );
+}
 }
 
 export default App;

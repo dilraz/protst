@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import '../App.css';
 import firebase from 'firebase';
 import Autopilot from 'twilio/lib/rest/Autopilot';
+import Sidebar from "../Sidebar"
 
 class CampaignSingle  extends React.Component  {
   constructor(props) {
@@ -17,7 +18,7 @@ class CampaignSingle  extends React.Component  {
           
           const data = snapshot.data()
           this.setState({ campaign: snapshot.data() });
-          console.log("All data in 'books' collection", this.state.campaign);
+        //  console.log("All data in 'books' collection", this.state.campaign);
         }
       )
         
@@ -65,13 +66,13 @@ class CampaignSingle  extends React.Component  {
       </div>
     </div>
   </nav>
-  <br/><br/>
-  <section className="page-section">
+  <br/><br/> 
+  {/* <section className="page-section">
     <div className="row">
   <div className="col-lg-8">
 
-<div class="text-center">
-  <h2 class="section-heading text-uppercase">{this.state.campaign.name}</h2>
+<div className="text-center">
+  <h2 className="section-heading text-uppercase">{this.state.campaign.name}</h2>
    </div>
  
   <p className="lead">{this.state.campaign.location}</p>
@@ -84,9 +85,9 @@ class CampaignSingle  extends React.Component  {
          <div className="col-md-3">
 <div className="card my-4">
 <div className="card-header">Create a Video Group</div>
-<div class="card-body">
+<div className="card-body">
   <div className="input-group">
-    <p class="text-muted">Click below to join the video conference</p>
+    <p className="text-muted">Click below to join the video conference</p>
     <a className="btn btn-warning" href={"/videoGroup/" + this.state.campaign.name} >Join Now!</a>
   </div>
 </div>
@@ -97,6 +98,86 @@ class CampaignSingle  extends React.Component  {
          </div>
          </section>
          
+  */}
+  <section className="page-section">
+  <div className="container">
+
+    <div className="row">
+
+      <div className="col-lg-8">
+
+        <h1 className="mt-4">{this.state.campaign.name}</h1>
+
+        <p className="lead">
+          by
+          <a href="#"> Start Bootstrap</a>
+        </p>
+
+        <hr/>
+
+        <p>Posted on January 1, 2019 at 12:00 PM</p>
+
+        <hr/>
+
+        <img className="campaign-img" src={this.state.campaign.photoUrl} alt=""/>
+
+        <hr/>
+
+        <p>{this.state.campaign.description}</p>
+
+        <hr/>
+
+        <div className="card my-4">
+          <h5 className="card-header">Leave a Comment:</h5>
+          <div className="card-body">
+            <form>
+              <div className="form-group">
+                <textarea className="form-control" rows="3"></textarea>
+              </div>
+              <button type="submit" className="btn btn-primary">Submit</button>
+            </form>
+          </div>
+        </div>
+
+        <div className="media mb-4">
+          <img className="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt=""/>
+          <div className="media-body">
+            <h5 className="mt-0">Commenter Name</h5>
+            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+          </div>
+        </div>
+
+        <div className="media mb-4">
+          <img className="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt=""/>
+          <div className="media-body">
+            <h5 className="mt-0">Commenter Name</h5>
+            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+
+            <div className="media mt-4">
+              <img className="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt=""/>
+              <div className="media-body">
+                <h5 className="mt-0">Commenter Name</h5>
+                Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+              </div>
+            </div>
+
+            <div className="media mt-4">
+              <img className="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt=""/>
+              <div className="media-body">
+                <h5 className="mt-0">Commenter Name</h5>
+                Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div> <Sidebar 
+      type="c" 
+      campId={this.props.match.params.id}  />
+</div></div>
+
+  </section>
   <footer className="footer">
     <div className="container">
       <div className="row align-items-center">
@@ -135,9 +216,14 @@ class CampaignSingle  extends React.Component  {
       </div>
     </div>
   </footer>
-    </div>
+   
+  </div>
+  
   );
+
+  
 }
+
 }
 
 

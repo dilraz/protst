@@ -1,0 +1,121 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  .login-body {
+    box-sizing: border-box;
+    font-family: Sans-serif;
+    margin: 0;
+  }
+  .login-container {
+    display: flex;
+    height: 100vh;
+  }
+  .login-page-left {
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 420px;
+    animation-name: login-page-left;
+    animation-duration:1s;
+    animation-delay:0s;
+    
+  }
+  
+  .login-form-page {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    animation-name: login-slide;
+    animation-delay:2s;
+  }
+  
+  .login-form-page input {
+    width: 100%;
+  }
+  
+  .login-header {
+    max-width: 80%;
+    
+  }
+  
+  .login-header1 {
+    padding-top: 100px;
+    font-weight: bold;
+    font-size: 20px;
+    font-family: Sans-serif;
+    padding-bottom: 10px;
+  }
+  .login-header2 {
+    padding-bottom: 30px;
+    color: grey;
+    font-size: 15px;
+  }
+  .login-email-add {
+    margin-bottom: 20px;
+    height: 45px;
+    border-radius: 3px;
+    padding-left: 15px;
+    border: 2px solid lightgrey;
+    font-size: 15px;
+    width: 270px;
+  }
+  
+  .login-pswd {
+    height: 45px;
+    border-radius: 3px;
+    padding-left: 15px;
+    border: 2px solid lightgrey;
+    font-size: 15px;
+    width: 270px;
+  }
+  .login-a {
+    color: black;
+    float: right;
+    font-size: 14px;
+  }
+  .login-login {
+    font-weight: normal;
+    font-size: 15px;
+    color: white;
+    height: 45px;
+    border-radius: 3px;
+    border: none;
+    background-color: #0f7ef1;
+    margin-bottom: 40px;
+    margin-top: 10px;
+    width: 100%;
+    letter-spacing: 1px;
+  
+  }
+  .login-page-right {
+    flex: 1;
+    background-image: url("https://images.pexels.com/photos/3585095/pexels-photo-3585095.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940");
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  @keyframes login-page-left {
+    40% {
+      opacity:0;
+  max-width:0;
+  }
+    100%{
+      opacity:1;
+      max-width:420px;
+      
+    }
+  }
+  @keyframes login-slide{
+    0%{
+      opacity:0;
+      visibility:hidden;
+      transform:translateY(-25px);
+    }
+    100%{
+      opacity:1;
+      visibility:visible;
+      transform:translateY(0);
+  
+    }
+  }

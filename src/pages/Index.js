@@ -1,13 +1,9 @@
 import React from 'react';
 import '../App.css';
-import App from "../App"
 
-
-function Index() {
+function Index({handleLogout}) {
   return (
 <div className="App">
- 
-    
 <nav className="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
 <div className="container">
 <a className="navbar-brand js-scroll-trigger" href="/" style={{fontSize:50,fontFamily:"Merienda One"}}>PROTST</a>
@@ -19,7 +15,7 @@ function Index() {
 <div className="collapse navbar-collapse" id="navbarResponsive">
   <ul className="navbar-nav text-uppercase ml-auto">
     <li className="nav-item">
-      <a className="nav-link js-scroll-trigger" href="/signin" >I am A Member</a>
+      <a className="nav-link js-scroll-trigger" href="/profile" >I am A Member</a>
     </li>
     <li className="nav-item">
       <a className="nav-link js-scroll-trigger" href="/campaigns">Campaigns</a>
@@ -31,7 +27,7 @@ function Index() {
       <a className="nav-link js-scroll-trigger" href="#team">Team</a>
     </li>
     <li className="nav-item">
-      <a className="nav-link js-scroll-trigger" href="#contact">Contact</a>
+      <a className="nav-link js-scroll-trigger" onClick = {handleLogout}>Logout</a>
     </li>
   </ul>
 </div>

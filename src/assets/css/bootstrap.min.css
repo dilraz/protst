@@ -1,4 +1,5 @@
 /*! * Bootstrap v4.3.1 (https://getbootstrap.com/) * Copyright 2011-2019 The Bootstrap Authors * Copyright 2011-2019 Twitter, Inc. * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE) */
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed&display=swap');
 :root{
     --blue:#007bff;
     --indigo:#6610f2;
@@ -27,7 +28,7 @@
     --breakpoint-lg:992px;
     --breakpoint-xl:1200px;
     --font-family-sans-serif:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
-    --font-family-monospace:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace
+    --font-family-monospace:SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
 }
 *,::after,::before{
     box-sizing:border-box
@@ -435,7 +436,7 @@ pre code{
 }
 @media (min-width:1200px){
     .container{
-        max-width:1140px
+        max-width:1350px
     }
 }
 .container-fluid{
@@ -3721,6 +3722,8 @@ display: -webkit-box;
     margin-left:1.25rem
 }
 .card-header{
+    font-family: "Barlow Condensed";
+    font-weight: 500;
     padding:.75rem 1.25rem;
     margin-bottom:0;
     background-color:rgba(0,0,0,.03);

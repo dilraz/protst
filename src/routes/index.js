@@ -1,24 +1,33 @@
 import React from 'react';
-import {Switch, Route} from 'react-router-dom';
-
+import {BrowserRouter as Router, Route} from 'react-router-dom';
+import PrivateRoute from "./PrivateRoute";
 import SignIn from '../pages/SignIn';
 import Index from "../pages/Index"
-import Members from '../pages/Members';
+import Members from '../Members';
 import Campaigns from '../pages/Campaigns';
 import VideoApp from "../VideoApp";
 import CampaignSingle from "../pages/CampaignSingle"
 import Wall from "../pages/Wall"
+import Profile from "../pages/Profile"
+import {AuthProvider} from "../Auth"
 
-export default function Routes() {
-    return ( <Switch>
-        <Route path="/" exact component = {Index}/>
-        <Route path='/members' component={Members}/>
-        <Route path='/signin' component={SignIn}/>
-        <Route path='/campaigns' component={Campaigns}/>
-        <Route path='/viewCampaign/:id' component={CampaignSingle}/>
-        <Route path='/videoGroup/:name' component = {VideoApp}/>
-        <Route path='/wall/:tag' component = {Wall}/>
-        <Route component={SignIn} />
-        </Switch>
+const Routes = () => {
+    return ( 
+    <AuthProvider>
+    <Router>
+        <div>
+        <Route  exact path="/"  component = {Index}/>
+        <Route exact path='/members' component={Members}/>
+        <Route Route path='/profile' component={Profile}/>
+        <Route exact path='/signin' component={SignIn}/>
+        <Route exact path='/campaigns' component={Campaigns}/>
+        <Route exact path='/viewCampaign/:id' component={CampaignSingle}/>
+        <PrivateRoute exact path='/videoGroup/:name' component = {VideoApp}/>
+        <Route exact path='/wall/:tag' component = {Wall}/>
+        </div>
+        </Router>
+        </AuthProvider>
     );
 }
+
+export default Routes;

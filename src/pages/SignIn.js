@@ -1,11 +1,13 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import '../App.css';
 import fire from "../fire";
 import Login from '../Login';
 import Hero from '../Hero';
 import firebase from "firebase";
-import { useHistory } from 'react-router-dom';
-import Members from "./Members"
+import { Redirect, useHistory } from 'react-router-dom';
+import Members from "../Members";
+import Index from "../pages/Index";
+import {AuthContext} from "../Auth"
 
 function SignIn() {
   const [name, setName] = useState('');
@@ -18,11 +20,9 @@ function SignIn() {
   
   var history = useHistory();
   const changeName = ()=>  {
-    document.getElementById("labelname").hidden = true;
     document.getElementById("name-input").hidden = true;
   }
   const changeBack = ()=>  {
-    document.getElementById("labelname").hidden = false;
     document.getElementById("name-input").hidden = false;
   }
 
@@ -82,6 +82,7 @@ function SignIn() {
         
 
       })
+   
     })
     .catch(function(error) {
       // Handle Errors here.
@@ -162,14 +163,15 @@ function SignIn() {
     fire
     .auth()
     .createUserWithEmailAndPassword(email,password)
-    .then(cred => {
-      return fire.firestore().collection('users').doc(cred.user.uid).set({
-        name : {name},
-        email: {email}
+
+    // .then(cred => {
+    //   return fire.firestore().collection('users').doc(cred.user.uid).set({
+    //     name : {name},
+    //     email: {email}
         
 
-      })
-    })
+    //   })
+    // })
     .catch(err => {
       switch(err.code){
         case  "auth/email-already-in-use":
@@ -205,52 +207,19 @@ function SignIn() {
    authListener();
  }, [])
 
+const{currentUser} = useContext(AuthContext);
 
+if (currentUser) {
+  return <Index handleLogout={handleLogout}/>
+}
+else if(!currentUser){
   return (
     
-    <div className="App">
-      <nav className="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-      <div className="container">
-<a className="navbar-brand js-scroll-trigger" href="/" style={{fontSize:50,fontFamily:"Merienda One"}}>PROTST</a>
-<button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-  
-
-  <i className="fa fa-bars"></i>
-</button>
-<div className="collapse navbar-collapse" id="navbarResponsive">
-  <ul className="navbar-nav text-uppercase ml-auto">
-    <li className="nav-item">
-      <a className="nav-link js-scroll-trigger" href="/signin" >I am A Member</a>
-    </li>
-    <li className="nav-item">
-    <a className="nav-link js-scroll-trigger" href="/campaigns">Campaigns</a>
-    </li>
-    <li className="nav-item">
-      <a className="nav-link js-scroll-trigger" href="#about">About</a>
-    </li>
-    <li className="nav-item">
-      <a className="nav-link js-scroll-trigger" href="#team">Team</a>
-    </li>
-    <li className="nav-item">
-      <a className="nav-link js-scroll-trigger" href="#contact">Contact</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-  <section>
-  <div className="container">
-  <br/>
-<div className="row">
-  
-  <div className="col-lg-12 text-center">
-    <h2 className="section-heading text-uppercase">Log In / Register</h2>
-    <h3 className="section-subheading text-muted">Please enter the details below carefully.</h3>
-  </div>
- 
+   <div>
 {user ? (
 
  <Hero handleLogout={handleLogout}/>
+ 
 ) : (  
 
     <Login 
@@ -274,15 +243,12 @@ emailError={emailError}
 passwordError={passwordError}
 />
 )} 
-
 </div>
 
-</div>
-</section>
-</div>
   
  
   );
-}
-
+}}
 export default SignIn;
+
+
