@@ -15,12 +15,15 @@ class Campaigns extends React.Component {
       
       componentDidMount=()=>{
         const campaignsRef = firebase.firestore().collection('campaigns');
-campaignsRef.onSnapshot((snapshot) => {
+   const unsub = campaignsRef.onSnapshot((snapshot) => {
     
     const data = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
-    }));
+    
+    }
+    ));
+    unsub();
     console.log("All data in 'books' collection", data);
     this.setState({campaignslist:data})
     

@@ -1,7 +1,10 @@
-import React from 'react';
+import React from "react";
 import '../App.css';
 
 function Index({handleLogout}) {
+ 
+ 
+ 
   return (
 <div className="App">
 <nav className="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">

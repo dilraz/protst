@@ -7,9 +7,7 @@ import firebase from "firebase";
 
 class App extends React.Component {
  
-  state = {
-    loggedIn: false,
-  };
+  
 render(){
   return (
     <Router history = {history}>

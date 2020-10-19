@@ -101,7 +101,7 @@ return(
   <div className="login-header2">Log in to your account using email and password<br/></div>
   </div>
   <div className="login-form-page">
-  <input type="text" required value={name} className="login-email-add" hidden onChange={(e) =>setName(e.target.value)} id="name-input" placeholder="Name"/>
+  <input type="text" required value={name} className="login-email-add" hidden onChange={(e) =>setName(e.target.value)} id="name-input" placeholder="Name" required/>
     <input className="login-email-add"  value={email} onChange={(e) =>setEmail(e.target.value)}   id="email-input" placeholder="Email Address"/>
     <input className="login-pswd" type="password"  value={password}  onChange={(e) =>setPassword(e.target.value)}  id="password-input" placeholder="Password" />
     <p >{emailError}</p>

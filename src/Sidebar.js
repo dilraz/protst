@@ -17,9 +17,9 @@ if (!currentUser && type=="c" ) {
         <h3 className="card-header bg-dark text-light">Not Logged In?
         </h3>
         <div className="card-body text-center">
-        <span> &nbsp;<button className="login-btn">Login</button>
+        <span> &nbsp;<a href="/signin"><button className="login-btn" >Login</button></a>
        <span>&nbsp; or &nbsp;</span>
-         <button className="signup-btn">Sign Up</button></span>
+       <a href="/signin"> <button className="signup-btn" >Sign Up</button></a></span>
           </div>
       </div>
 <hr/>
@@ -42,9 +42,9 @@ if (!currentUser && type=="c" ) {
           <h3 className="card-header bg-dark text-light">Not Logged In?
           </h3>
           <div className="card-body text-center">
-          <span> &nbsp;<button className="login-btn">Login</button>
+          <span> &nbsp;<a href="/signin"><button className="login-btn" >Login</button></a>
          <span>&nbsp; or &nbsp;</span>
-           <button className="signup-btn">Sign Up</button></span>
+           <a href="/signin"><button className="signup-btn" >Sign Up</button></a></span>
             </div>
         </div>
   <hr/>

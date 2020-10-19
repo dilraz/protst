@@ -1,49 +1,97 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import Sidebar from "../Sidebar"
-import "../user.css"
+import "../user.css";
+import firebase from "firebase";
+import currentUser from '../routes/PrivateRoute';
 
-function changeData(val)
-    {
-        var posts =document.getElementById("posts-div");
-        var friends = document.getElementById("friends-div");
-        var about = document.getElementById("about-div");
-        var edit = document.getElementById("edit-div");
-
-        if(val == "posts")
-        {
-                posts.hidden=true;
-                friends.hidden=false;
-                about.hidden=false;
-                edit.hidden=false;
-        }
-        else if(val == "about")
-        {
-            posts.hidden=false;
-            friends.hidden=false;
-            about.hidden=true;
-            edit.hidden=false;
-        }
-        else if(val == "friends")
-        {
-            posts.hidden=false;
-            friends.hidden=true;
-            about.hidden=false;
-            edit.hidden=false;
-        }else if(val =="edit")
-        {
-            posts.hidden=false;
-            friends.hidden=false;
-            about.hidden=false;
-            edit.hidden=true;
-        }
-    }
 
 class Profile extends React.Component {
+    
+
+    constructor(props) {
+        super(props);
+       
+        this.state = {userCreated : [],friendsRef : []}
+        }
+        
+       
+    state = {
+        showPost: true,
+        showEdit:false,
+        showFriend:false,
+        id:""
+    }
+
  
+
+   displayPost()
+   {
+    this.setState({showPost:true});
+    this.setState({showEdit:false});
+    this.setState({showFriend:false});
+   }
+   displayFriend()
+   {
+    this.setState({showPost:false});
+    this.setState({showEdit:false});
+    this.setState({showFriend:true});
+   }
+  
+   displayEdit()
+   {
+    this.setState({showPost:false});
+    this.setState({showEdit:true});
+    this.setState({showFriend:false});
+   }
+
+
+
+  componentDidMount()
+  {
+
+         firebase.auth().onAuthStateChanged((user) => {
+         if (user) {
+            const usersRef = firebase.firestore().collection('users');
+            const unsubscribe=  usersRef.doc(user.uid).onSnapshot((snapshot) => {
+                const data = snapshot.data()
+                this.setState({ userCreated: snapshot.data() });
+              }
+            )
+            const friendsRef = firebase.firestore().collection('users').doc(this.state.id).collection('friends');
+            const unsubscribe2= friendsRef.onSnapshot((snapshot) => {
+        
+                const data = snapshot.docs.map((doc) => ({
+                  id: doc.id,
+                  ...doc.data(),
+                }));
+                console.log("All friends", data);
+                this.setState({friendsRef:data})
+            });
+         } else {
+          
+             console.log('There is no logged in user');
+         }
+        })
+       
+        
    
+
+        
+
+   
+  }
 
   render(){
       
+      const {id} =this.state
+    const { showPost } = this.state;
+    const { showAbout} = this.state;
+    const { showFriend } = this.state;
+    const { showEdit } = this.state;
+
+
+   
+
  return(
     <div className="App">
     <nav className="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
@@ -88,36 +136,37 @@ class Profile extends React.Component {
 			<div>
 				<div className="row grid clearfix">
 					<div className="col2 first">
-						<img src="http://images.contactmusic.com/newsimages/david_beckham_1133321.jpg" alt=""/>
-						<h1>david beckham</h1>
-						<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's</p>
+						<img src={this.state.userCreated.photoUrl} alt=""/>
+						<h1>{this.state.userCreated.name}</h1>
+						<p>{this.state.userCreated.bio}</p>
 						
 					</div>
 					<div className="col2 last">
 						<div className="grid clearfix">
 							<div className="col3 first">
-								<h1>694</h1>
-								<span>Following</span>
+								<h1>34</h1>
+								<span>Friends</span>
 							</div>
-							<div className="col3"><h1>452</h1>
-							<span>Likes</span></div>
-							<div className="col3 last"><h1>1207</h1>
-							<span>Bookmarks</span></div>
+							<div className="col3"><h1>352</h1>
+							<span>Activities</span></div>
+							<div className="col3 last"><h1>85</h1>
+							<span>My Score</span></div>
 						</div>
 					</div>
 				</div>
 					<ul className="row2tab">
-						<li><i className="fa fa-list-alt" onclick={changeData("posts")}></i> My posts </li>
-						<li><i className="fa fa-heart" onclick={changeData("friends")}></i> Friends </li>
-						<li><i className="fa fa-check" onclick={changeData("about")}></i> About Me </li>
-						<li><i className="fa fa-thumbs-o-up " onclick={changeData("edit")}></i> Edit Profile </li>
+						<li  onClick={() =>this.displayPost()}><i className="fa fa-list-alt"></i> My posts </li>
+						<li onClick={() =>this.displayFriend()}><i className="fa fa-heart" ></i> Friends </li>
+						
+						<li onClick={() =>this.displayEdit()}><i className="fa fa-thumbs-o-up "></i> Edit Profile </li>
 					</ul>
-                    <div id="posts-div"></div>
-                    <div id="friends-div"></div>
-                    <div id="about-div"></div>
-                    <div id="edit-div"></div>
+                  
+                   
 				</div>
-			
+                { showPost && ( <div className="hidDiv">you have no posts!</div>)}
+                    
+                    { showFriend && (  <div className="hidDiv" >You have no friends!</div>)}
+                  { showEdit && (  <div className="hidDiv" >What are you even editing?</div>)}
 		</div>
 </div>  <Sidebar 
     type="u" 

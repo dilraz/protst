@@ -5,12 +5,14 @@ import Login from '../Login';
 import Hero from '../Hero';
 import firebase from "firebase";
 import { Redirect, useHistory } from 'react-router-dom';
-import Members from "../Members";
 import Index from "../pages/Index";
 import {AuthContext} from "../Auth"
 
 function SignIn() {
+
+  
   const [name, setName] = useState('');
+  const [id, setId] = useState('');
   const [user, setUser] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -44,7 +46,20 @@ function SignIn() {
     fire
     .auth()
     .signInWithEmailAndPassword(email,password)
+    // .then((user) =>{
+    //   if(user){
+    //   if(!user.user.emailVerified){
+    //    user.user.sendEmailVerification().then(function()
+    //      {
+    //        handleLogout()
+    //      }
+    //    )
+    //   }
+    // }
+    // })
+
     .catch(err => {
+      console.log(err.message);
       switch(err.code){
         case  "auth/invalid-email":
           case  "auth/user-disabled":
@@ -159,19 +174,23 @@ function SignIn() {
 
   const handleSignUp = () =>{
     clearErrors();
-
+ 
     fire
     .auth()
     .createUserWithEmailAndPassword(email,password)
-
-    // .then(cred => {
-    //   return fire.firestore().collection('users').doc(cred.user.uid).set({
-    //     name : {name},
-    //     email: {email}
-        
-
-    //   })
-    // })
+    .then(cred => {
+     
+          return (fire.firestore().collection('users').doc(cred.user.uid).set({
+        name: name,
+        email: email,
+        bio: "",
+        photoUrl: ""
+      },fire.firestore().collection('users').doc(cred.user.uid).collection("friends").doc().set({
+        userId:""
+      })
+          )
+      )
+    })
     .catch(err => {
       switch(err.code){
         case  "auth/email-already-in-use":
@@ -182,7 +201,9 @@ function SignIn() {
                setPasswordError(err.message);
                break;
       }
+    
     })
+   
   }
 
  const handleLogout = () => {
