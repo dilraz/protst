@@ -29,16 +29,16 @@ class Members  extends React.Component  {
               })
              
               const userRef = firebase.firestore().collection('campaignmember');
-              campRef.doc("dat.users_id").then(querySnapshot => {
-                /* ... */
-                querySnapshot.forEach(snapshot => {
+              // campRef.doc("dat.users_id").then(querySnapshot => {
+              //   /* ... */
+              //   querySnapshot.forEach(snapshot => {
                     
-                     this.setState({ campaign: snapshot.data() });
-                     this.state.campaign.id = snapshot.id;
-                console.log("All data in 'books' collection", this.state.campaign);
-                  }); 
+              //        this.setState({ campaign: snapshot.data() });
+              //        this.state.campaign.id = snapshot.id;
+              //   console.log("All data in 'books' collection", this.state.campaign);
+              //     }); 
                   
-                })
+              //   })
               
         //       const userlist=[];
         // this.state.campaign.forEach(dat =>

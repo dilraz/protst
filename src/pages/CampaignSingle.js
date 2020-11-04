@@ -8,7 +8,7 @@ class CampaignSingle  extends React.Component  {
   constructor(props) {
       super(props);
      
-      this.state = {campaign : []}
+      this.state = {campaign : [],comments: []}
       }
       
     componentDidMount() {
@@ -21,8 +21,23 @@ class CampaignSingle  extends React.Component  {
         //  console.log("All data in 'books' collection", this.state.campaign);
         }
       )
+      const commentsRef = firebase.firestore().collection('campaigns').doc(this.props.match.params.id).collection("posts");
+      commentsRef.onSnapshot((snapshot) => {
+    
+        const data = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        
+        }
+        
+        ));
+        this.setState({comments:data})
+        //console.log("All data in 'books' collection", data);
+      }
+      )
         
         };
+        
       
     
 
@@ -138,44 +153,39 @@ class CampaignSingle  extends React.Component  {
             </form>
           </div>
         </div>
-
+        {this.state.comments.map(data => {
+                return (
         <div className="media mb-4">
           <img className="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt=""/>
           <div className="media-body">
-            <h5 className="mt-0">Commenter Name</h5>
-            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+            <h5 className="mt-0">{data.title}</h5>
+           {data.description}
           </div>
         </div>
+ );
+               
+})}
+     
+        
+       
+        
 
-        <div className="media mb-4">
-          <img className="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt=""/>
-          <div className="media-body">
-            <h5 className="mt-0">Commenter Name</h5>
-            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-
-            <div className="media mt-4">
-              <img className="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt=""/>
-              <div className="media-body">
-                <h5 className="mt-0">Commenter Name</h5>
-                Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-              </div>
-            </div>
-
-            <div className="media mt-4">
-              <img className="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt=""/>
-              <div className="media-body">
-                <h5 className="mt-0">Commenter Name</h5>
-                Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-      </div> <Sidebar 
+      </div>
+       {/* <Sidebar 
       type="c" 
-      campId={this.props.match.params.id}  />
+      campId={this.props.match.params.id}  /> */}
+      <div className="col-md-4">
+<div className="card my-4">
+<div className="card-header">Create a Video Group</div>
+<div className="card-body">
+  <div className="input-group">
+    <p className="text-muted">Click below to join the video conference</p>
+    <a className="btn btn-warning" href={"/videoGroup/" + this.state.campaign.name} >Join Now!</a>
+  </div>
+</div>
 </div></div>
+</div>
+</div>
 
   </section>
   <footer className="footer">

@@ -1,10 +1,28 @@
-import React from "react";
-import '../App.css';
 
-function Index({handleLogout}) {
+import React, {useState, useEffect, useContext} from 'react';
+import '../App.css';
+import fire from "../fire";
+
+function Index() {
+  const [user, setUser] = useState('');
+  const authListener =()=>{
+    fire.auth().onAuthStateChanged(user =>{
+      if(user)
+      {
+        setUser(user);
  
- 
- 
+      }else{
+        setUser("");
+      }
+    })
+  }
+  useEffect(() =>{
+    authListener();
+  }, [])
+  const handleLogout = () => {
+    fire.auth().signOut();
+    
+  }
   return (
 <div className="App">
 <nav className="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
@@ -30,7 +48,15 @@ function Index({handleLogout}) {
       <a className="nav-link js-scroll-trigger" href="#team">Team</a>
     </li>
     <li className="nav-item">
-      <a className="nav-link js-scroll-trigger" onClick = {handleLogout}>Logout</a>
+   
+    {user ? (
+
+<a className="nav-link js-scroll-trigger" style={{cursor:"pointer"}} onClick = {handleLogout}>Logout</a>
+
+) : (  
+  <a className="nav-link js-scroll-trigger" href="/login">Sign In</a>
+)}
+     
     </li>
   </ul>
 </div>

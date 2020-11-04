@@ -18,11 +18,12 @@ const Routes = () => {
         <div>
         <Route  exact path="/"  component = {Index}/>
         <Route exact path='/members' component={Members}/>
-        <Route Route path='/profile' component={Profile}/>
-        <Route exact path='/signin' component={SignIn}/>
-        <Route exact path='/campaigns' component={Campaigns}/>
-        <Route exact path='/viewCampaign/:id' component={CampaignSingle}/>
-        <PrivateRoute exact path='/videoGroup/:name' component = {VideoApp}/>
+        <PrivateRoute exact path='/profile' component={Profile}/>
+        <Route path='/signin/:next' component={SignIn}/>
+        <Route path='/login' component={SignIn}/> 
+        <Route exact path='/campaigns'  component={Campaigns}/>
+        <PrivateRoute exact path='/viewCampaign/:id' component={CampaignSingle}/>
+        <Route exact path='/videoGroup/:name' component = {VideoApp}/>
         <Route exact path='/wall/:tag' component = {Wall}/>
         </div>
         </Router>

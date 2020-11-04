@@ -10,6 +10,7 @@ import {AuthContext} from "../Auth"
 
 function SignIn() {
 
+
   
   const [name, setName] = useState('');
   const [id, setId] = useState('');
@@ -21,6 +22,15 @@ function SignIn() {
   const [hasAccount, setHasAccount]= useState(false);
   
   var history = useHistory();
+  const vals = history.location.pathname.toString().split("signin/");
+  var next;
+  const length = vals.length -1;
+  
+  if(vals[length].includes("login")){
+    next="";
+  }else{
+  next = vals[length];
+  }
   const changeName = ()=>  {
     document.getElementById("name-input").hidden = true;
   }
@@ -230,20 +240,16 @@ function SignIn() {
 
 const{currentUser} = useContext(AuthContext);
 
-if (currentUser) {
-  return <Index handleLogout={handleLogout}/>
-}
-else if(!currentUser){
-  return (
-    
+return(
+   
    <div>
-{user ? (
-
- <Hero handleLogout={handleLogout}/>
- 
+{currentUser ? (
+ <Redirect to={"/" + next}/>
+  
 ) : (  
-
+  
     <Login 
+    user = {currentUser}
     name= {name}
     setName = {setName}
 email={email}
@@ -265,11 +271,10 @@ passwordError={passwordError}
 />
 )} 
 </div>
-
-  
+ );
+}
  
-  );
-}}
+
 export default SignIn;
 
 

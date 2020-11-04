@@ -27,7 +27,8 @@ if (!currentUser && type=="c" ) {
         <h3 class="card-header bg-dark text-light">Campaign Members
         </h3>
         <div class="card-body">
-     <Members campId={campId}/>
+          
+     {/* <Members campId={campId}/> */}
           </div>
       </div>
    <hr/>

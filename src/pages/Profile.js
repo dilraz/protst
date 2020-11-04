@@ -1,8 +1,10 @@
-import React, { useContext } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
+import fire from "../fire";
 import Sidebar from "../Sidebar"
 import "../user.css";
 import firebase from "firebase";
 import currentUser from '../routes/PrivateRoute';
+import handleLogout from "./SignIn"
 
 
 class Profile extends React.Component {
@@ -11,7 +13,7 @@ class Profile extends React.Component {
     constructor(props) {
         super(props);
        
-        this.state = {userCreated : [],friendsRef : []}
+        this.state = {userCreated : [],friendsRef : [],user: []}
         }
         
        
@@ -48,7 +50,7 @@ class Profile extends React.Component {
 
   componentDidMount()
   {
-
+ 
          firebase.auth().onAuthStateChanged((user) => {
          if (user) {
             const usersRef = firebase.firestore().collection('users');
@@ -57,30 +59,31 @@ class Profile extends React.Component {
                 this.setState({ userCreated: snapshot.data() });
               }
             )
-            const friendsRef = firebase.firestore().collection('users').doc(this.state.id).collection('friends');
-            const unsubscribe2= friendsRef.onSnapshot((snapshot) => {
+        //     const friendsRef = firebase.firestore().collection('users').doc(this.state.id).collection('friends');
+        //     const unsubscribe2= friendsRef.onSnapshot((snapshot) => {
         
-                const data = snapshot.docs.map((doc) => ({
-                  id: doc.id,
-                  ...doc.data(),
-                }));
-                console.log("All friends", data);
-                this.setState({friendsRef:data})
-            });
-         } else {
+        //         const data = snapshot.docs.map((doc) => ({
+        //           id: doc.id,
+        //           ...doc.data(),
+        //         }));
+        //         console.log("All friends", data);
+        //         this.setState({friendsRef:data})
+        //     });
+        //  } else {
           
-             console.log('There is no logged in user');
-         }
-        })
+        //      console.log('There is no logged in user');
+          }
+         })
        
         
-   
 
         
 
    
   }
 
+  
+ 
   render(){
       
       const {id} =this.state
