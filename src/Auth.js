@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         fire.auth().onAuthStateChanged(setCurrentUser);
-
+        
     }, []);
 
      return (

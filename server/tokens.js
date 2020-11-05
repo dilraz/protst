@@ -1,4 +1,5 @@
 const twilio = require('twilio');
+const functions= require('firebase-functions')
 const AccessToken = twilio.jwt.AccessToken;
 const { VideoGrant } = AccessToken;
 
@@ -18,6 +19,7 @@ const videoToken = (identity, room, config) => {
     videoGrant = new VideoGrant();
   }
   const token = generateToken(config);
+  console.log("token",token);
   token.addGrant(videoGrant);
   token.identity = identity;
   return token;

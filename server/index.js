@@ -8,7 +8,6 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(pino);
-
 const sendTokenResponse = (token, res) => {
   res.set('Content-Type', 'application/json');
   res.send(
@@ -38,6 +37,6 @@ app.post('/video/token', (req, res) => {
   sendTokenResponse(token, res);
 });
 
-app.listen(3001, () =>
+app.listen(5001, () =>
   console.log('Express server is running on localhost:3001')
 );
