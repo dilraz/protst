@@ -51,6 +51,7 @@ class CampaignSingle  extends React.Component  {
   return (
     
     <div className="App">
+     
       <nav className="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
       <div className="container">
 <a className="navbar-brand js-scroll-trigger" href="/" style={{fontSize:50,fontFamily:"Merienda One"}}>PROTST</a>
@@ -116,7 +117,10 @@ class CampaignSingle  extends React.Component  {
   */}
   <section className="page-section">
   <div className="container">
-
+  <form method="post" action="http://us-central1-protst.cloudfunctions.net/video/token">
+        <input type="text"></input>
+        <input type="submit" value="submit"></input>
+      </form>
     <div className="row">
 
       <div className="col-lg-8">

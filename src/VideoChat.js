@@ -20,17 +20,23 @@ const VideoChat = (props) => {
 
   const handleSubmit = useCallback(
     async event => {
+      //console.log("data: ", (campaign.name.toString() ));
       event.preventDefault();
-      const data = await fetch('/video/token', {
+      var proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+  var targetUrl = 'https://us-central1-protst.cloudfunctions.net/video/token';
+  let url = new URL(proxyUrl+targetUrl);
+url.search = new URLSearchParams({
+    identity:username,
+    room:campaign.name
+})    
+
+  const data = await fetch((url), {
         method: 'POST',
-        body: JSON.stringify({
-          identity: username,
-          room: roomName
-        }),
         headers: {
           'Content-Type': 'application/json'
         }
-      }).then(res => res.json());
+      })
+      .then(res => res.json());
       setToken(data.token);
     },
     [roomName, username]
@@ -43,10 +49,13 @@ const VideoChat = (props) => {
   let render;
   if (token) {
     render = (
+      <section>
       <Room roomName={campaign.name} token={token} handleLogout={handleLogout} />
+      </section>
     );
   } else {
     render = (
+      <section>
       <Lobby
       props={props}
         username={username}
@@ -55,6 +64,7 @@ const VideoChat = (props) => {
         handleRoomNameChange={handleRoomNameChange}
         handleSubmit={handleSubmit}
       />
+      </section>
     );
   }
   return render;
