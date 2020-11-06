@@ -49,13 +49,10 @@ url.search = new URLSearchParams({
   let render;
   if (token) {
     render = (
-      <section>
       <Room roomName={campaign.name} token={token} handleLogout={handleLogout} />
-      </section>
     );
   } else {
     render = (
-      <section>
       <Lobby
       props={props}
         username={username}
@@ -64,7 +61,7 @@ url.search = new URLSearchParams({
         handleRoomNameChange={handleRoomNameChange}
         handleSubmit={handleSubmit}
       />
-      </section>
+      
     );
   }
   return render;

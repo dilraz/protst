@@ -13,7 +13,31 @@ const Room = ({ props,roomName, token, handleLogout }) => {
   useEffect(() => {
     const participantConnected = participant => {
       setParticipants(prevParticipants => [...prevParticipants, participant]);
+      console.log('Participant "%s" connected', participant.identity);
+
+      const div = document.createElement('div');
+      div.id = participant.sid;
+      div.innerText = participant.identity;
+    
+      participant.on('trackSubscribed', track => trackSubscribed(div, track));
+      participant.on('trackUnsubscribed', trackUnsubscribed);
+    
+      participant.tracks.forEach(publication => {
+        if (publication.isSubscribed) {
+          trackSubscribed(div, publication.track);
+        }
+      });
+    
+      document.body.appendChild(div);
+    
     };
+    function trackSubscribed(div, track) {
+      div.appendChild(track.attach());
+    }
+    
+    function trackUnsubscribed(track) {
+      track.detach().forEach(element => element.remove());
+    }
 
     const participantDisconnected = participant => {
       setParticipants(prevParticipants =>
