@@ -14,17 +14,17 @@ video.use(express.static(path.join(__dirname, 'build')));
 
 video.post("/token", (req, res) => {
     console.log("i got a request");
-const identity = req.query.identity;
-const room = req.query.room;
-const token = new AccessToken(twilioAccountSid, twilioApiKeySID, twilioApiKeySecret, {
-ttl: MAX_ALLOWED_SESSION_DURATION,
-});
-token.identity = identity;
-const videoGrant = new VideoGrant({ room: room });
-token.addGrant(videoGrant);
-console.log("token",req.query);
-res.send(JSON.stringify({ token: token.toJwt() }));
-console.log("issued token for in room", {identity});
+    const identity = req.query.identity;
+    const room = req.query.room;
+    const token = new AccessToken(twilioAccountSid, twilioApiKeySID, twilioApiKeySecret, {
+        ttl: MAX_ALLOWED_SESSION_DURATION,
+    });
+    token.identity = identity;
+    const videoGrant = new VideoGrant({ room: room });
+    token.addGrant(videoGrant);
+    console.log("token", req.query);
+    res.send(JSON.stringify({ token: token.toJwt() }));
+    console.log("issued token for in room", { identity });
 });
 
 //video.get('*', (_, res) => res.sendFile(path.join(__dirname, 'build/index.html')));

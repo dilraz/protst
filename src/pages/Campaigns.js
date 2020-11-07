@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import '../App.css';
 import fire from '../fire';
 import firebase from 'firebase';
-import '../assets/css/cards.css'
 
 class Campaigns extends React.Component {
     
@@ -24,7 +23,7 @@ class Campaigns extends React.Component {
     }
     ));
     unsub();
-    console.log("All data in 'books' collection", data);
+    //console.log("All data in 'books' collection", data);
     this.setState({campaignslist:data})
     
 
@@ -38,6 +37,7 @@ class Campaigns extends React.Component {
   return (
     
     <div className="App">
+     
       <nav className="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
       <div className="container">
 <a className="navbar-brand js-scroll-trigger" href="/" style={{fontSize:50,fontFamily:"Merienda One"}}>PROTST</a>
@@ -68,33 +68,6 @@ class Campaigns extends React.Component {
     </div>
   </nav>
 <section>
-   {/* <table id="example" class="display table">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Name</th>
-                    <th>Location</th>
-                    <th>Description</th>
-                </tr>
-            </thead>
-            <tbody>
-            {this.state.campaignslist.map(data => {
-                
-                return (
-                    <tr>     
-                    <td>{data.name}</td>
-                    <td>{data.location}</td>
-                    <td>{data.description}</td>
-                    <td>{data.photoUrl}</td>
-                    </tr>
-                    
-                );
-               
-                })}
-        
-               
-            </tbody>
-            
-         </table>  */}
 
 
 <div className="col-lg-12 text-center">
@@ -103,19 +76,19 @@ class Campaigns extends React.Component {
   </div>
   <br/>
  
- 
-    <div class="card-deck">
+
+    <div class="card-deck" style={{justifyContent:"center"}}>
     {this.state.campaignslist.map(data => {
                 return (
-  <div className="card text-black bg-light mb-3">
+  <div className="card text-white bg-dark mb-3" style={{maxWidth:450,minWidth:400}}>
     <img className="card-img-top" src={data.photoUrl}  height="300"/>
     <div className="card-body">
       <h5 className="card-title">{data.name}</h5>
       <p className="card-text">{data.description}</p>
     </div>
-    <a style={{color:"black"}} href={"/viewCampaign/" + data.id}>
+    <a style={{color:"#F2C838",textDecoration:"none"}} href={"/viewCampaign/" + data.id}>
     <div class="card-footer">
-      <h4>View More</h4>
+      <h4>View Campaign</h4>
     </div></a>
   </div>
  );

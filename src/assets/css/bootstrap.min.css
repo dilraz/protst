@@ -3776,6 +3776,7 @@ display: -webkit-box;
     border-bottom-left-radius:calc(.25rem - 1px)
 }
 .card-deck{
+   
     display:-ms-flexbox;
     display:flex;
     -ms-flex-direction:column;
