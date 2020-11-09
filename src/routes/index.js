@@ -17,15 +17,14 @@ const Routes = () => {
             <Router>
                 <div>
                     <Route exact path="/" component={Index} />
-                    <Route exact path='/members' component={Members} />
                     <PrivateRoute exact path='/profile' component={Profile} />
                     <Route path='/signin/:next' component={SignIn} />
                     <Route path='/login' component={SignIn} />
                     <Route exact path='/campaigns' component={Campaigns} />
                     <PrivateRoute exact path='/viewCampaign/:id' component={CampaignSingle} />
-                    <Route exact path='/videoGroup/:name' component={VideoApp} />
-                    <Route exact path="/createCampaign" component={CreateCampaign}/>
-                    <Route exact path='/thread/:camp/:thread' component={Thread} />
+                    <PrivateRoute exact path='/videoGroup/:name' component={VideoApp} />
+                    <PrivateRoute exact path="/createCampaign" component={CreateCampaign}/>
+                    <PrivateRoute exact path='/thread/:camp/:thread' component={Thread} />
                 </div>
             </Router>
         </AuthProvider>

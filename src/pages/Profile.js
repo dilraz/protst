@@ -4,6 +4,8 @@ import { Redirect, useHistory } from "react-router-dom";
 import Sidebar from "../Sidebar";
 import "../user.css";
 import Navbar from "../Navbar"
+import fire from "../fire";
+import { createPath } from "history";
 
 
 class Profile extends React.Component {
@@ -13,7 +15,7 @@ class Profile extends React.Component {
     super(props);
 
    
-    this.state = { userCreated: [], friendsRef: [], user: [], friend: [], picture: [], imgUrl: []}
+    this.state = { userCreated: [], friendsRef: [], user: [], friend: [], picture: [],friends:0, imgUrl: [],activities:0,activity:[]}
   }
 
 
@@ -25,7 +27,11 @@ class Profile extends React.Component {
 
   }
 
-  
+  loadPosts(title,desc)
+  {
+document.getElementById("pos").innerHTML+="<div class='card-dark' style='margin-top:20px'><h3 class='card-header bg-dark text-light' style='border-bottom: 2px solid #FED136'>"+title+"</h3><div class='card-body bg-dark'> <div class='input-group'><p class='text-white'>"+desc+"</p></div></div></div>"
+  }
+
   loadFriends(url,name,bio)
   {
     document.getElementById("mem").innerHTML +=("<td><div class='card bg-dark mb-3 tour shadow' style='float:left;margin:10px;max-width:200px'><img style='width:200px;height:200px;padding-bottom:8px;border-bottom:2px solid #fed136;' class='card-img-top tour-image' src='" +url +"'>"
@@ -47,7 +53,7 @@ class Profile extends React.Component {
     this.setState({ showFriend: val });
     this.setState({ showEdit: false });
     this.setState({ showPost: false });
-    this.getFriend();
+    
     }
   }
 
@@ -61,10 +67,6 @@ class Profile extends React.Component {
 }
 
 
-  getFriend() 
-  {
-   
-  }
 
   checkUpload() {
     //console.log(this.state.userCreated.id);
@@ -87,8 +89,18 @@ class Profile extends React.Component {
 
 
   }
+  calculateScore()
+  {
+    var a = this.state.activities;
+    var score=Math.floor((a/69)*100);
+    return score;
+  }
 
- 
+ addActivity()
+ {
+  this.state.activities+=1;
+  
+ }
   handleSubmit() {
     let nameInput = document.getElementById("name").value;
     let bioInput = document.getElementById("bio").value;
@@ -112,18 +124,19 @@ class Profile extends React.Component {
         }
         );
        
+      }).then(()=>
+      {
+        window.location.reload()
       }).catch(err => {
-        //   console.log(err.code);
-
+          console.log(err.code);
       })
    
-    document.getElementById("message").innerText = "Updated Successfully. Refresh to View Changes !"
+    document.getElementById("message").innerText = "Updated Successfully!"
   }
 
   componentDidMount() {
     // this.displayFriend();
-
-
+    console.log(this.state.activity)
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         const usersRef = firebase.firestore().collection('users');
@@ -138,6 +151,7 @@ class Profile extends React.Component {
     const friendsRef = firebase.firestore().collection('users').doc(user.uid).collection("friends");
     const unsub = friendsRef.onSnapshot((snapshot) => {
      const data = snapshot.docs.map((doc) => {
+       this.state.friends+=1;
      const vv = (doc.data().userId);
      if(vv!=""){
      const userR = firebase.firestore().collection('users').doc(vv).onSnapshot((snapshot) => {
@@ -147,22 +161,53 @@ class Profile extends React.Component {
      })
    }
    }
- 
      );
      unsub();
      
  })
        }
-     })
 
-   
+              const snapshot = fire.firestore().collection("campaigns").where('owner_id', '==', user.uid).get().then(snapshot => {
+    
+                const data = snapshot.docs.map((doc) => 
+                {
+                 // this.setState({activity:doc.data()})
+                  this.addActivity()  
+                }
+                );
+             
+    })
+    const snapshott = fire.firestore().collectionGroup("posts").where('userId', '==', user.uid).get().then(snapshott => {
+     
+      const dataa = snapshott.docs.map((doc) => {
+      this.loadPosts(doc.data().title,doc.data().description)
+        this.addActivity()  
+      });
+      
+    
+})
+
+const snapshottt = fire.firestore().collectionGroup("comments").where('userId', '==', user.uid).get().then(snapshottt => {
+     
+  const dataaa = snapshottt.docs.map((doc) => {
+    this.loadPosts(doc.data().title,doc.data().description)
+    this.addActivity()  
+  });
+  
+
+})
+
+       })
+    
+
+    
 
   }
 
 
 
   render() {
-
+   
     const { id } = this.state
     const { showPost } = this.state;
     const { showAbout } = this.state;
@@ -180,7 +225,10 @@ class Profile extends React.Component {
         <br /><br />
 
         <section className="page-section">
-
+          {/* {this.state.activity.map(data=>
+            {
+                console.log(data)
+            })} */}
           <div className="container">
 
             <div className="row">
@@ -202,9 +250,9 @@ class Profile extends React.Component {
                             <h1>{this.state.friendsRef.length}</h1>
                             <span>Friends</span>
                           </div>
-                          <div className="col3"><h1>352</h1>
+    <div className="col3"><h1>{this.state.activities}</h1>
                             <span>Activities</span></div>
-                          <div className="col3 last"><h1>85</h1>
+    <div className="col3 last"><h1>{this.calculateScore()}</h1>
                             <span>My Score</span></div>
                         </div>
                       </div>
@@ -219,7 +267,11 @@ class Profile extends React.Component {
 
 
                   </div>
-                  <div className="hidDiv" style={{ display: (showPost ? 'block' : 'none') }}>you have no posts!</div>
+                  <div className="hidDiv"  style={{ display: (showPost ? 'block' : 'none') }}>
+                  <br></br>
+               <div id="pos" className="col-md-12"></div>
+
+                  </div>
 
                   <div className="hidDiv" style={{ display: (showFriend ? 'block' : 'none') }}>
                    <div id="mem" ></div>
@@ -228,29 +280,29 @@ class Profile extends React.Component {
                   </div>
                   <div className="hidDiv" style={{ display: (showEdit ? 'block' : 'none') }} >
 
-                    <div class="container">
-                      <div class="row">
-                        <div class="col-lg-12" id="editForm">
+                    <div className="container">
+                      <div className="row">
+                        <div className="col-lg-12" id="editForm">
 
                           <fieldset>
                             <legend>Edit Personal Information:</legend>
                             <br />
-                            <div class="form-group row">
-                              <div class="col-md-8">
+                            <div className="form-group row">
+                              <div className="col-md-8">
                                 <div className="form-group" >
                                   <label for="Name">Name </label>
-                                  <input type="text" class="form-control" id="name" placeholder={this.state.userCreated.name} />
+                                  <input type="text" className="form-control" id="name" placeholder={this.state.userCreated.name} />
                                 </div>
                               </div>
 
                             </div>
 
-                            <div class="form-group">
+                            <div className="form-group">
                               <label for="Bio">Bio </label>
-                              <textarea class="form-control" id="bio" placeholder={this.state.userCreated.bio}></textarea>
+                              <textarea className="form-control" id="bio" placeholder={this.state.userCreated.bio}></textarea>
                             </div>
 
-                            <div class="form-group">
+                            <div className="form-group">
                               <label for="Bio">Profile Picture </label><br />
                               <input type="file" id="imageInput" accept="image/*" />
                             </div>

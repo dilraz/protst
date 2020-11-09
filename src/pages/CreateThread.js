@@ -7,7 +7,7 @@ import { AuthContext } from '../Auth';
 
 
 
-class CreateCampaign extends React.Component {
+class CreateThread extends React.Component {
     
   constructor(props) {
       
@@ -20,48 +20,41 @@ class CreateCampaign extends React.Component {
       getCampaigns(id,title)
       {
         document.getElementById("camps").innerHTML +=("# <a style='text-decoration: none' href='/viewCampaign/"  + id+"'<p class='lead'>"+ title+"</p>");
-  
       }
-
+      
       handleSubmit()
       {
 
     let title = document.getElementById("title").value;
-    let location = document.getElementById("location").value;
     let desc = document.getElementById("description").value;
     let picture = document.getElementById("poster").files[0];
     let id = this.state.current.uid
+
 if(picture){
-    let ref = 'campaigns/' + this.state.rand
-    if(title=="" || location=="" || desc==""){
+    let ref = 'threads/' + this.state.rand
+    if(title=="" || desc==""){
         document.getElementById("error").innerText="Please fill All The Above Fields !"
       }else{
-     let storageRef = firebase.storage().ref().child('campaigns/' + this.state.rand)
+     let storageRef = firebase.storage().ref().child('threads/' + this.state.rand)
      let storageTask = storageRef.put(picture)
      storageTask.on('state_changed', function(snapshot){
     }, function(error) {
         // Handle unsuccessful uploads
       }, function() {
-        // Handle successful uploads on complete
-        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
         storageRef.getDownloadURL()
         .then((url) => {
-    
             console.log("url", url)
       const userRef = firebase.firestore().collection('users');
        
            
-         firebase.firestore().collection('campaigns').doc().set({
-          owner_id: id,
+         firebase.firestore().collection('campaigns').doc(this.props.match.params.camp).collection("threads").doc().set({
+          userId: id,
            description: desc,
            photoUrl:url,
            name:title,
            created: firebase.firestore.Timestamp.now()
            
-         }).then(()=>
-    {
-      window.location.replace("/campaigns")
-    })
+         })
          
       document.getElementById("error").innerText="Campaign added successfully!"
       document.getElementById("poster").value=null;
@@ -245,4 +238,4 @@ Protst.org is web based and designed to also be available on mobile platforms as
 }
 
 
-export default CreateCampaign;
+export default CreateThread;

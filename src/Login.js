@@ -14,8 +14,11 @@ return(
   <div>
 <body className="login-body">
 <div className="login-container">
+  
 <div className="login-page-left">
+ 
   <div className="login-header">
+  <a href="/"><button>Go To Home</button></a>
 <div className="login-header1">Welcome Back</div>
   <div className="login-header2">Log in to your account using email and password<br/></div>
   </div>
@@ -33,22 +36,22 @@ return(
                 <>
                
                 <button onClick={handleLogin} className="login-login">Sign In</button>
-                <img style={{width:70,height:70}} onClick={handleGoogle} src={google}/>&emsp;
-            <img style={{width:70,height:70}} onClick={handleTwitter} src={twitter}/>&emsp;
-            <img style={{width:70,height:70}} onClick={handleFacebook} src={facebook}/><br></br>
+                <img style={{width:70,height:70,cursor:"pointer"}} onClick={handleGoogle} src={google}/>&emsp;
+            <img style={{width:70,height:70,cursor:"pointer"}} onClick={handleTwitter} src={twitter}/>&emsp;
+            <img style={{width:70,height:70,cursor:"pointer"}} onClick={handleFacebook} src={facebook}/><br></br>
               <br/>
-                <p>No Account? <span onClick={() => setHasAccount(!hasAccount)}><span onClick={()=>changeBack()}>Sign Up</span></span></p>
+                <p>No Account? <span onClick={() => setHasAccount(!hasAccount)}><span onClick={()=>changeBack()}><span style={{cursor:"pointer"}}>Sign Up</span></span></span></p>
                 </>
                
         ) : (
             <>
             <button className="login-login" onClick={handleSignUp}>Sign Up</button>
-             <img style={{width:70,height:70}} onClick={handleGoogle} src={google}/>&emsp;
-             <img style={{width:70,height:70}} onClick={handleTwitter} src={twitter}/>&emsp;
-          <img style={{width:70,height:70}} onClick={handleFacebook} src={facebook}/><br></br>
+             <img style={{width:70,height:70,cursor:"pointer"}} onClick={handleGoogle} src={google}/>&emsp;
+             <img style={{width:70,height:70,cursor:"pointer"}} onClick={handleTwitter} src={twitter}/>&emsp;
+          <img style={{width:70,height:70,cursor:"pointer"}} onClick={handleFacebook} src={facebook}/><br></br>
            
             <br/>
-             <p>Account already? <span onClick={() => setHasAccount(!hasAccount)}><span onClick={()=>changeName()}>Sign In</span></span></p>
+             <p>Account already? <span onClick={() => setHasAccount(!hasAccount)}><span onClick={()=>changeName()}><span style={{cursor:"pointer"}}>Sign In</span></span></span></p>
              </>
            
          )

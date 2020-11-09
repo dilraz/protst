@@ -15,7 +15,7 @@ class Campaigns extends React.Component {
       }
       
       componentDidMount=()=>{
-        const campaignsRef = firebase.firestore().collection('campaigns');
+    const campaignsRef = firebase.firestore().collection('campaigns');
    const unsub = campaignsRef.onSnapshot((snapshot) => {
     
     const data = snapshot.docs.map((doc) => ({

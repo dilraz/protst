@@ -55,8 +55,6 @@ function SignIn() {
   const handleLogin = () => {
     clearErrors();
 
-    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
-      .then(function () {
         fire
           .auth()
           .signInWithEmailAndPassword(email, password)
@@ -70,7 +68,7 @@ function SignIn() {
                 }
                 )
               }
-
+              localStorage.setItem("isThere" , "yes");
             }
           })
 
@@ -87,7 +85,7 @@ function SignIn() {
                 break;
             }
           })
-      })
+    
       .catch(function (error) {
         // Handle Errors here.
         var errorCode = error.code;
@@ -104,25 +102,42 @@ function SignIn() {
       var token = result.credential.accessToken;
       // The signed-in user info.
       var user = result.user;
-
+      
+     
       var clientToken = user.getIdToken();
       fire.auth().verifyIdToken(clientToken)
         .then(function (decodedToken) {
           var uid = decodedToken.uid;
-
+          
         })
 
-    })
-      .then(cred => {
-        return fire.firestore().collection('users').doc(cred.user.uid).set({
+    }).then(
+        firebase.auth().onAuthStateChanged(function(user)
+        {
+          if(user){
+            localStorage.setItem("isThere","yes");
+            //console.log(user.uid)
+          var check = fire.firestore().collection('users').doc(user.uid).onSnapshot((snapshot) => {
 
-          name: name,
-          email: email
+            const data = snapshot.data()
+      if(!data){
+           fire.firestore().collection('users').doc(user.uid).set({
+              name: user.displayName,
+              email: user.email,
+              bio: "Hey! I am new here. Feel free to add me.",
+              photoUrl: user.photoURL
+            }, fire.firestore().collection('users').doc(user.uid).collection("friends").doc().set({
+              userId: "60462bzVBSOuBbMAjKi40o3mUpa2"
+            })
+            )
 
-
+      }
+          })
+          
+          
+          }
         })
-
-      })
+      )
       .catch(function (error) {
         // Handle Errors here.
         var errorCode = error.code;
@@ -139,20 +154,49 @@ function SignIn() {
   const handleFacebook = () => {
     var provider = new firebase.auth.FacebookAuthProvider();
     fire.auth().signInWithPopup(provider).then(function (result) {
-      // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+      fire.auth().sendSignInLinkToEmail(result.user.email);
       var token = result.credential.accessToken;
       // The signed-in user info.
       var user = result.user;
+      
+     
+      var clientToken = user.getIdToken();
+      fire.auth().verifyIdToken(clientToken)
+        .then(function (decodedToken) {
+          var uid = decodedToken.uid;
+        
       // ...
-    })
-      .then(cred => {
-        return fire.firestore().collection('users').doc(cred.user.uid).set({
-          name: { name },
-          email: { email }
+    }
+  )}).then(
 
+      firebase.auth().onAuthStateChanged(function(user)
+        {
+          if(user){
 
+            localStorage.setItem("isThere","yes");
+           // console.log(user)
+      //     var check = fire.firestore().collection('users').doc(user.uid).onSnapshot((snapshot) => {
+
+      //       const data = snapshot.data()
+      // if(!data){
+      //      fire.firestore().collection('users').doc(user.uid).set({
+      //         name: user.displayName,
+      //         email: user.email,
+      //         bio: "Hey! I am new here. Feel free to add me.",
+      //         photoUrl: user.photoURL
+      //       }, fire.firestore().collection('users').doc(user.uid).collection("friends").doc().set({
+      //         userId: "60462bzVBSOuBbMAjKi40o3mUpa2"
+      //       })
+      //       )
+
+      // }
+      //     })
+          
+          
+          }
         })
-      })
+    )
+     
       .catch(function (error) {
         // Handle Errors here.
         var errorCode = error.code;
@@ -169,19 +213,45 @@ function SignIn() {
     var provider = new firebase.auth.TwitterAuthProvider();
     fire.auth().signInWithPopup(provider).then(function (result) {
       // This gives you a Twitter Access Token. You can use it to access the Twitter API.
+      
       var token = result.credential.accessToken;
       // The signed-in user info.
       var user = result.user;
+      var clientToken = user.getIdToken();
+      fire.auth().verifyIdToken(clientToken)
+        .then(function (decodedToken) {
+          var uid = decodedToken.uid;
+          
+        })
       // ...
     })
-      .then(cred => {
-        return fire.firestore().collection('users').doc(cred.user.uid).set({
-          name: { name },
-          email: { email }
+    .then(
+      firebase.auth().onAuthStateChanged(function(user)
+      {
+        if(user){
+          localStorage.setItem("isThere","yes");
+          //console.log(user.uid)
+        var check = fire.firestore().collection('users').doc(user.uid).onSnapshot((snapshot) => {
 
+          const data = snapshot.data()
+    if(!data){
+         fire.firestore().collection('users').doc(user.uid).set({
+            name: user.displayName,
+            email: "twitteruser@protst.org",
+            bio: "Hey! I am new here. Feel free to add me.",
+            photoUrl: user.photoURL
+          }, fire.firestore().collection('users').doc(user.uid).collection("friends").doc().set({
+            userId: "60462bzVBSOuBbMAjKi40o3mUpa2"
+          })
+          )
 
+    }
         })
+        
+        
+        }
       })
+    )
       .catch(function (error) {
         // Handle Errors here.
         var errorCode = error.code;
@@ -211,10 +281,7 @@ function SignIn() {
               }
               )
             }
-
-
           }
-
           return (fire.firestore().collection('users').doc(cred.user.uid).set({
             name: name,
             email: email,
@@ -225,7 +292,6 @@ function SignIn() {
           })
           )
           )
-
 
         })
         .catch(err => {
@@ -246,8 +312,9 @@ function SignIn() {
   }
 
   const handleLogout = () => {
+   
     fire.auth().signOut();
-
+  
   }
 
   const authListener = () => {

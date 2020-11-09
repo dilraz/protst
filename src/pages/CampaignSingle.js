@@ -8,12 +8,13 @@ class CampaignSingle extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { campaign: [], comments: [],owner:[] ,user:[],members: [],supporters:1}
+    this.state = { campaign: [], comments: [],owner:[] ,joined:null,user:[],members: [],supporters:0,isOwner:false}
   }
+    
 
     loadMembers(url,name)
     {
-      this.state.supporters +=1;
+     
       document.getElementById("mem").innerHTML +=("<span><img src="+url+" width='70' height='70' style='margin:10px;border-radius:50px'/> </span>");
     }
 
@@ -42,6 +43,7 @@ class CampaignSingle extends React.Component {
          created: firebase.firestore.Timestamp.now(),
          pic:data
        })
+       document.getElementById("error").innerText="Shared Successfully!";
        document.getElementById("title").value="";
        document.getElementById("comments").value="";
      }
@@ -49,10 +51,66 @@ class CampaignSingle extends React.Component {
        // console.log("Owner", );
     }
     )
-
-
- 
   }
+
+  join(){
+    fire.firestore().collection('campaigns').doc(this.props.match.params.id).collection("members").doc().set({
+      user_id: this.state.user.uid,
+    }).then(()=>
+    {
+      this.setState({joined:true})
+      window.location.reload()
+    })
+
+  }
+
+  checkJoinCampaign()
+  {
+    
+const snapshottt = fire.firestore().collection("campaigns").doc(this.props.match.params.id).collection("members").onSnapshot((snapshottt) => {
+     
+  const dataaa = snapshottt.docs.map((doc) => {
+  //  console.log(doc.data().user_id,this.state.user.uid)
+    if(doc.data().user_id==this.state.user.uid)
+    {
+      this.setState({joined:true})
+    //  console.log(this.state.joined)
+    }
+  });
+})
+  }
+  leave()
+  {
+    
+    var delete_query =  fire.firestore().collection('campaigns').doc(this.props.match.params.id).collection("members").where("user_id","==",this.state.user.uid)
+    .get()
+    .then(querySnapshot => {
+      querySnapshot.forEach((doc) => {
+        doc.ref.delete().then(() => {
+        //  console.log("Document successfully deleted!");
+        }).then(()=>
+        {
+          this.state.joined=false;
+          window.location.reload()
+        }).catch(function(error) {
+        //  console.error("Error removing document: ", error);
+        });
+      });
+    })
+    .catch(function(error) {
+   //   console.log("Error getting documents: ", error);
+    })
+    
+  }
+ 
+ deleteCampaign()
+ {
+  var delete_query =  fire.firestore().collection('campaigns').doc(this.props.match.params.id).delete().then(()=>
+  {
+    window.location.replace("/campaigns")
+  });
+    
+ }
 
   deleteComment(id)
   {
@@ -60,18 +118,26 @@ class CampaignSingle extends React.Component {
     
      
   }
+  useEffect()
+  {return(
+    this.checkJoinCampaign()
+  )
+    ,[]
+  }
 
 
   componentDidMount() {
+   
     // console.log("user", firebase.auth().currentUser);
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
       this.setState({user:user});
+     
       } else {
-        console.log('There is no logged in user');
+       // console.log('There is no logged in user');
       }
     })
-
+this.checkJoinCampaign();
 
 
     const campaignsRef = firebase.firestore().collection('campaigns');
@@ -88,12 +154,18 @@ class CampaignSingle extends React.Component {
 
       const data = snapshot.data()
      this.setState({owner:data})
+    if(snapshot.id == this.state.user.uid)
+    {
+      this.setState({isOwner:true})
+     //console.log("yes")
+    }
+
        // console.log("Owner", );
     }
     )
   }
   )
-    const commentsRef = firebase.firestore().collection('campaigns').doc(this.props.match.params.id).collection("posts");
+    const commentsRef = firebase.firestore().collection('campaigns').doc(this.props.match.params.id).collection("posts").orderBy('created', 'desc');
     commentsRef.onSnapshot((snapshot) => {
 
       const data = snapshot.docs.map((doc) => ({
@@ -109,14 +181,20 @@ class CampaignSingle extends React.Component {
     const membersRef = firebase.firestore().collection('campaigns').doc(this.props.match.params.id).collection("members");
    const unsub = membersRef.onSnapshot((snapshot) => {
     const data = snapshot.docs.map((doc) => {
+      if(doc){
+      this.state.supporters +=1;
     const vv = (doc.data().user_id);
-    if(vv!=""){
+    //console.log(vv)
+    if(vv){
     const userR = firebase.firestore().collection('users').doc(vv).onSnapshot((snapshot) => {
       this.setState({members:snapshot.data()})
      // console.log(snapshot.data())
       this.loadMembers(snapshot.data().photoUrl,snapshot.data().name)
     }) }}
-); unsub();})
+    }
+); unsub();
+
+   })
 
 const threadsRef = firebase.firestore().collection('campaigns').doc(this.props.match.params.id).collection("threads");
 const unsub2 = threadsRef.onSnapshot((snapshot) => {
@@ -126,7 +204,6 @@ const unsub2 = threadsRef.onSnapshot((snapshot) => {
    this.loadThreads(vv,doc.id)
 }
 ); unsub2();})
-    
 };
 
 
@@ -161,7 +238,12 @@ const unsub2 = threadsRef.onSnapshot((snapshot) => {
                 </p></td>  
     <td style={{width:"30%"}}> <p className="lead"><strong>  Supporters: </strong> {this.state.supporters}</p></td>
     
-    <td style={{width:"20%"}}><button className="btn btn-info">JOIN</button></td></tr> 
+    <td style={{width:"20%"}}>
+      {this.state.joined ? (<button className="btn btn-danger" onClick={()=>this.leave()}>LEAVE</button>):(<button id="bt" onClick={()=>this.join()} className="btn btn-info">JOIN</button>)}
+    
+      
+      </td></tr> 
+      <tr> <td style={{width:"40%"}}>{this.state.isOwner ? (<button className="btn btn-danger" onClick={()=>this.deleteCampaign()} >Delete Campaign</button>) :(null)}</td> </tr>
 
                 <hr />
                 <img className="campaign-img" src={this.state.campaign.photoUrl} alt="" />

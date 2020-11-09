@@ -12,26 +12,81 @@ class Thread extends React.Component {
       
       super(props);
         
-      this.state = {threadCreated : [],posts:[], user:[]};
+      this.state = {threadCreated : [],posts:[], user:[],comments:[]};
      
    
       }
+
+      addComment()
+  {
+    let title = document.getElementById("title").value;
+    let comment = document.getElementById("comments").value;
+    const userRef = firebase.firestore().collection('users');
+  //  console.log(this.state.user.uid)
+    userRef.doc(this.state.user.uid).onSnapshot((snapshot) => {
+
+      const data = snapshot.data().photoUrl
+      if(title=="" || comment==""){
+        document.getElementById("error").innerText="Please fill All The Above Fields !"
+      }else{
+       firebase.firestore().collection('campaigns').doc(this.props.match.params.camp).collection("threads").doc(this.props.match.params.thread).collection("comments").doc().set({
+         userId: this.state.user.uid,
+         description: comment ,
+         media_url:"",
+         supportScore:0,
+         title:title,
+         created: firebase.firestore.Timestamp.now(),
+         pic:data
+       })
+       document.getElementById("error").innerText="Shared Successfully!";
+       document.getElementById("title").value="";
+       document.getElementById("comments").value="";
+     }
+       
+       // console.log("Owner", );
+    }
+    )
+
+
+ 
+  }
+
+  deleteComment(id)
+  {
+    var delete_query =  firebase.firestore().collection('campaigns').doc(this.props.match.params.camp).collection("threads").doc(this.props.match.params.thread).collection("comments").doc(id).delete();
+    
+     
+  }
+
       getThreads(title,id)
       {
+        var user = localStorage.getItem("isThere");
+        if(user =="yes"){
         document.getElementById("threads").innerHTML +=("# <a style='text-decoration: none' href='/thread/"+this.props.match.params.camp + "/"  + id+"'<p class='lead'>"+ title+"</p>");
-  
+        }
       }
 
       getMembers(url)
       {
+        var user = localStorage.getItem("isThere");
+        if(user =="yes"){
         document.getElementById("mem").innerHTML +=("<span><img src="+url+" width='70' height='70' style='margin:10px;border-radius:50px'/> </span>");
-     
+        }
       }
 
       componentDidMount() {
      
      //   this.returnUser();
         
+        firebase.auth().onAuthStateChanged(user=>
+          {
+            if(user)
+            {
+              this.setState({user:user})
+            //  console.log(user)
+            }
+          })
+
         const threadsRef = firebase.firestore().collection('campaigns').doc(this.props.match.params.camp).collection('threads');
         const unsubscribe = threadsRef.doc(this.props.match.params.thread).onSnapshot((snapshot) => {
           const data = snapshot.data()
@@ -62,7 +117,19 @@ const unsub2 = threadRef.onSnapshot((snapshot) => {
 
 ); unsub2();})
            
-            
+const commentsRef = firebase.firestore().collection('campaigns').doc(this.props.match.params.camp).collection("threads").doc(this.props.match.params.thread).collection("comments").orderBy('created', 'desc');
+commentsRef.onSnapshot((snapshot) => {
+
+  const data = snapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }
+
+  ));
+  this.setState({ comments: data })
+  //console.log("All data in 'books' collection", data);
+}
+)
          
     };
       
@@ -99,13 +166,41 @@ const unsub2 = threadRef.onSnapshot((snapshot) => {
                       <div className="form-group">
                         <textarea id="comments" className="form-control" rows="3" placeholder="Description"></textarea>
                       </div>
-                      <button type="submit" className="btn btn-primary">Submit</button>
+                      <button type="submit" onClick={()=>this.addComment()} className="btn btn-primary">Submit</button>
                    <br/>
                    <p id="error"></p>
                   </div>
 
                 </div>
+                {this.state.comments.map(data => {
+                  //console.log(data.userId,this.state.user.uid)
+if(data.userId == this.state.user.uid){
 
+                  return (
+                    <div className="media mb-4">
+                      <img className="d-flex mr-3 rounded-circle"  src={data.pic} width="50" height="50" alt="" />
+                      <div className="media-body">
+                        <h5 className="mt-0">{data.title}</h5>
+                        {data.description}
+                      </div>
+                      <button className="btn btn-danger" onClick={()=>this.deleteComment(data.id)}>Delete</button>
+                    </div>
+                  );
+}else {
+ 
+  return (
+    
+    <div className="media mb-4">
+      <img className="d-flex mr-3 rounded-circle"  src={data.pic} width="50" height="50" alt="" />
+      <div className="media-body">
+        <h5 className="mt-0">{data.title}</h5>
+        {data.description}
+      </div>
+     
+    </div>
+  );
+}
+                })}
     </div>
  </div>
  <br/>
