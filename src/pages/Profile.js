@@ -1,9 +1,9 @@
 import firebase from "firebase";
-import React from 'react';
+import React ,{useState} from 'react';
 import { Redirect, useHistory } from "react-router-dom";
 import Sidebar from "../Sidebar";
 import "../user.css";
-import FriendCard from "../FriendCard"
+import Navbar from "../Navbar"
 
 
 class Profile extends React.Component {
@@ -12,7 +12,8 @@ class Profile extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { userCreated: [], friendsRef: [], user: [], friend: [], picture: [], imgUrl: [] }
+   
+    this.state = { userCreated: [], friendsRef: [], user: [], friend: [], picture: [], imgUrl: []}
   }
 
 
@@ -20,73 +21,54 @@ class Profile extends React.Component {
     showPost: false,
     showEdit: false,
     showFriend: false,
-    id: "",
+    id: ""
 
   }
 
-
+  
+  loadFriends(url,name,bio)
+  {
+    document.getElementById("mem").innerHTML +=("<td><div class='card bg-dark mb-3 tour shadow' style='float:left;margin:10px;max-width:200px'><img style='width:200px;height:200px;padding-bottom:8px;border-bottom:2px solid #fed136;' class='card-img-top tour-image' src='" +url +"'>"
+    +"<div class='card-body bg-dark text-light tour-body text-center'><h5 class='card-title tour-title'>"+ name+"</h5><p style ='overflow: hidden;display: -webkit-box;-webkit-line-clamp: 2;-webkit-box-orient: vertical;' class='card-text tour-description'>"+bio+"</p>"
+        + "</a></div></div></div></td>");
+  }
 
   displayPost() {
+    if(!this.state.showPost){
     var val = !this.state.showPost;
     this.setState({ showPost: val });
     this.setState({ showEdit: false });
     this.setState({ showFriend: false });
-    document.getElementById("urls").innerText="";
+    }
   }
   displayFriend() {
+    if(!this.state.showFriend){
     var val = !this.state.showFriend;
     this.setState({ showFriend: val });
     this.setState({ showEdit: false });
     this.setState({ showPost: false });
     this.getFriend();
+    }
   }
 
   displayEdit() {
+    if(!this.state.showEdit){
     var val = !this.state.showEdit;
     this.setState({ showEdit: val });
     this.setState({ showPost: false });
     this.setState({ showFriend: false });
-    document.getElementById("urls").innerText="";
   }
+}
 
 
-  getFriend() {
-
-
-    const friendref = firebase.firestore().collection('users');
-    let length = this.state.friendsRef.length
-    let i=0;
-    for(i=0;i<length;i++)
-    {
-    
-      const unsubscribe = friendref.doc(this.state.friendsRef[i].userId).onSnapshot((snapshot) => {
-        const data = snapshot.data()
-     
-       this.state.friend.push(data);
-        
-        
-      
-       
-      }
-      )
-    }
-   // console.log(this.state.friend)
+  getFriend() 
+  {
    
-    // const unsub = friendref.doc(id).onSnapshot((snapshot) => {
-    //   const data = snapshot.data()
-    //   this.setState({ friend: snapshot.data() });
-    //   // console.log("friend", this.state.friend);
-
-    // }
-
-    // )
-
   }
-
 
   checkUpload() {
     //console.log(this.state.userCreated.id);
-    let storageRef = firebase.storage().ref('photos/' + this.state.userCreated.id);
+    let storageRef = firebase.storage().ref().child('photos/' + this.state.userCreated.id);
     let fileUpload = document.getElementById("imageInput");
     let fileSubmit = document.getElementById("submit");
     let firstFile;
@@ -129,14 +111,13 @@ class Profile extends React.Component {
           "photoUrl": url
         }
         );
-        this.props.history.go(0)
+       
       }).catch(err => {
         //   console.log(err.code);
 
       })
-    //  console.log("called", image);
    
-    document.getElementById("message").innerText = "Updated Successfully !"
+    document.getElementById("message").innerText = "Updated Successfully. Refresh to View Changes !"
   }
 
   componentDidMount() {
@@ -154,25 +135,27 @@ class Profile extends React.Component {
         }
 
         )
-        const friendsRef = firebase.firestore().collection('users').doc(user.uid).collection('friends');
-        const unsubscribe2 = friendsRef.onSnapshot((snapshot) => {
+    const friendsRef = firebase.firestore().collection('users').doc(user.uid).collection("friends");
+    const unsub = friendsRef.onSnapshot((snapshot) => {
+     const data = snapshot.docs.map((doc) => {
+     const vv = (doc.data().userId);
+     if(vv!=""){
+     const userR = firebase.firestore().collection('users').doc(vv).onSnapshot((snapshot) => {
+       this.setState({members:snapshot.data()})
+      // console.log(snapshot.data())
+       this.loadFriends(snapshot.data().photoUrl,snapshot.data().name,snapshot.data().bio)
+     })
+   }
+   }
+ 
+     );
+     unsub();
+     
+ })
+       }
+     })
 
-          const data = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-
-          this.setState({ friendsRef: data });
-        });
-      } else {
-
-        console.log('There is no logged in user');
-      }
-    })
-
-
-
-
+   
 
   }
 
@@ -193,36 +176,7 @@ class Profile extends React.Component {
 
       <div className="App">
      
-        <nav className="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-          <div className="container">
-            <a className="navbar-brand js-scroll-trigger" href="/" style={{ fontSize: 50, fontFamily: "Merienda One" }}>PROTST</a>
-            <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-
-
-              <i className="fa fa-bars"></i>
-            </button>
-            <div className="collapse navbar-collapse" id="navbarResponsive">
-              <ul className="navbar-nav text-uppercase ml-auto">
-                <li className="nav-item">
-                  <a className="nav-link js-scroll-trigger" href="/signin" >I am A Member</a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link js-scroll-trigger" href="/campaigns">Campaigns</a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link js-scroll-trigger" href="#about">About</a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link js-scroll-trigger" href="#team">Team</a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link js-scroll-trigger" href="#contact">Contact</a>
-                </li>
-
-              </ul>
-            </div>
-          </div>
-        </nav>
+      <Navbar/>
         <br /><br />
 
         <section className="page-section">
@@ -255,14 +209,7 @@ class Profile extends React.Component {
                         </div>
                       </div>
                     </div>
-                    {this.state.friend.map(data => {
-                      console.log(data.name);
-                     // console.log(data)
-                      return (
-                        <FriendCard username={data.name} photourl={data.photoUrl}/>
-                      )
-
-                    })}
+                  
                     <ul className="row2tab">
                       <li onClick={() => this.displayPost()}><i className="fa fa-list-alt"></i> My posts </li>
                       <li onClick={() => this.displayFriend()}><i className="fa fa-heart" ></i> Friends </li>
@@ -275,7 +222,7 @@ class Profile extends React.Component {
                   <div className="hidDiv" style={{ display: (showPost ? 'block' : 'none') }}>you have no posts!</div>
 
                   <div className="hidDiv" style={{ display: (showFriend ? 'block' : 'none') }}>
-                    <p id="urls"></p>
+                   <div id="mem" ></div>
 
                   
                   </div>

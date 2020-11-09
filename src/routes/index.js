@@ -7,10 +7,10 @@ import CampaignSingle from "../pages/CampaignSingle";
 import Index from "../pages/Index";
 import Profile from "../pages/Profile";
 import SignIn from '../pages/SignIn';
-import Wall from "../pages/Wall";
+import Thread from "../pages/Thread";
 import VideoApp from "../VideoApp";
 import PrivateRoute from "./PrivateRoute";
-
+import CreateCampaign from "../pages/CreateCampaign"
 const Routes = () => {
     return (
         <AuthProvider>
@@ -24,7 +24,8 @@ const Routes = () => {
                     <Route exact path='/campaigns' component={Campaigns} />
                     <PrivateRoute exact path='/viewCampaign/:id' component={CampaignSingle} />
                     <Route exact path='/videoGroup/:name' component={VideoApp} />
-                    <Route exact path='/wall/:tag' component={Wall} />
+                    <Route exact path="/createCampaign" component={CreateCampaign}/>
+                    <Route exact path='/thread/:camp/:thread' component={Thread} />
                 </div>
             </Router>
         </AuthProvider>

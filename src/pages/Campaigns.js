@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import '../App.css';
 import fire from '../fire';
 import firebase from 'firebase';
+import Navbar from '../Navbar';
 
 class Campaigns extends React.Component {
     
@@ -10,6 +11,7 @@ class Campaigns extends React.Component {
       super(props);
      
       this.state = {campaignslist : []}
+      
       }
       
       componentDidMount=()=>{
@@ -38,64 +40,38 @@ class Campaigns extends React.Component {
     
     <div className="App">
      
-      <nav className="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-      <div className="container">
-<a className="navbar-brand js-scroll-trigger" href="/" style={{fontSize:50,fontFamily:"Merienda One"}}>PROTST</a>
-<button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-  
-
-  <i className="fa fa-bars"></i>
-</button>
-<div className="collapse navbar-collapse" id="navbarResponsive">
-  <ul className="navbar-nav text-uppercase ml-auto">
-    <li className="nav-item">
-      <a className="nav-link js-scroll-trigger" href="/signin" >I am A Member</a>
-    </li>
-    <li className="nav-item">
-    <a className="nav-link js-scroll-trigger" href="/campaigns">Campaigns</a>
-    </li>
-    <li className="nav-item">
-      <a className="nav-link js-scroll-trigger" href="#about">About</a>
-    </li>
-    <li className="nav-item">
-      <a className="nav-link js-scroll-trigger" href="#team">Team</a>
-    </li>
-    <li className="nav-item">
-      <a className="nav-link js-scroll-trigger" href="#contact">Contact</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-<section>
-
-
+     <Navbar/>
+<div className="container">
+<div className="page-section">
+  <br/><hr/>
 <div className="col-lg-12 text-center">
-    <h2 className="section-heading text-uppercase">Active Campaigns</h2>
+    <h2 className="section-heading text-uppercase" style={{fontFamily:"Work Sans"}}>Active Campaigns</h2>
     <h4 className="section-subheading text-muted">Find out more about these active campaigns by clicking on the button below</h4>
+    <br/>
+   <a href="/createCampaign"><button className="btn btn-info" >Create A Campaign</button></a> 
   </div>
+  
   <br/>
  
 
     <div class="card-deck" style={{justifyContent:"center"}}>
     {this.state.campaignslist.map(data => {
                 return (
-  <div className="card text-white bg-dark mb-3" style={{maxWidth:450,minWidth:400}}>
-    <img className="card-img-top" src={data.photoUrl}  height="300"/>
+  <div className="card text-white bg-dark mb-3" style={{maxWidth:380,minWidth:380}}>
+    <img className="card-img-top" src={data.photoUrl}  height="270"/>
     <div className="card-body">
-      <h5 className="card-title">{data.name}</h5>
-      <p className="card-text">{data.description}</p>
+      <h5 className="card-title" style={{fontFamily:"Work Sans"}}>{data.name}</h5>
+      <p className="card-text" >{data.description}</p>
     </div>
     <a style={{color:"#F2C838",textDecoration:"none"}} href={"/viewCampaign/" + data.id}>
     <div class="card-footer">
-      <h4>View Campaign</h4>
+      <h5>VIEW CAMPAIGN</h5>
     </div></a>
   </div>
  );
                
 })}
-      </div>
-         </section>
+      </div></div></div>
         
        
   <footer className="footer">

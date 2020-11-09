@@ -2,38 +2,65 @@ import firebase from 'firebase';
 import React from 'react';
 import '../App.css';
 import fire from "../fire"
+import Navbar from '../Navbar';
 
 class CampaignSingle extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { campaign: [], comments: [],owner:[] ,user:[]}
+    this.state = { campaign: [], comments: [],owner:[] ,user:[],members: [],supporters:1}
   }
 
+    loadMembers(url,name)
+    {
+      this.state.supporters +=1;
+      document.getElementById("mem").innerHTML +=("<span><img src="+url+" width='70' height='70' style='margin:10px;border-radius:50px'/> </span>");
+    }
+
+    loadThreads(title,id)
+    {
+      document.getElementById("threads").innerHTML +=("# <a style='text-decoration: none' href='/thread/"+this.props.match.params.id + "/"  + id+"'<p class='lead'>"+ title+"</p>");
+    }
 
   addComment()
   {
     let title = document.getElementById("title").value;
     let comment = document.getElementById("comments").value;
-   // console.log(this.state.user.uid)
-   if(title=="" || comment==""){
-     document.getElementById("error").innerText="Please fill All The Above Fields !"
-   }else{
-    fire.firestore().collection('campaigns').doc(this.props.match.params.id).collection("posts").doc().set({
-      userId: this.state.user.uid,
-      description: comment ,
-      media_url:"",
-      supportScore:0,
-      title:title,
-    })
-  }
-    
+    const userRef = firebase.firestore().collection('users');
+    userRef.doc(this.state.user.uid).onSnapshot((snapshot) => {
+
+      const data = snapshot.data().photoUrl
+      if(title=="" || comment==""){
+        document.getElementById("error").innerText="Please fill All The Above Fields !"
+      }else{
+       fire.firestore().collection('campaigns').doc(this.props.match.params.id).collection("posts").doc().set({
+         userId: this.state.user.uid,
+         description: comment ,
+         media_url:"",
+         supportScore:0,
+         title:title,
+         created: firebase.firestore.Timestamp.now(),
+         pic:data
+       })
+       document.getElementById("title").value="";
+       document.getElementById("comments").value="";
+     }
+       
+       // console.log("Owner", );
+    }
+    )
+
+
+ 
   }
 
-  deleteComment()
+  deleteComment(id)
   {
+    var delete_query =  fire.firestore().collection('campaigns').doc(this.props.match.params.id).collection("posts").doc(id).delete();
     
+     
   }
+
 
   componentDidMount() {
     // console.log("user", firebase.auth().currentUser);
@@ -60,7 +87,7 @@ class CampaignSingle extends React.Component {
     ownerRef.doc(this.state.campaign.owner_id).onSnapshot((snapshot) => {
 
       const data = snapshot.data()
-      this.setState({ owner: snapshot.data() });
+     this.setState({owner:data})
        // console.log("Owner", );
     }
     )
@@ -72,7 +99,6 @@ class CampaignSingle extends React.Component {
       const data = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-
       }
 
       ));
@@ -80,8 +106,28 @@ class CampaignSingle extends React.Component {
       //console.log("All data in 'books' collection", data);
     }
     )
+    const membersRef = firebase.firestore().collection('campaigns').doc(this.props.match.params.id).collection("members");
+   const unsub = membersRef.onSnapshot((snapshot) => {
+    const data = snapshot.docs.map((doc) => {
+    const vv = (doc.data().user_id);
+    if(vv!=""){
+    const userR = firebase.firestore().collection('users').doc(vv).onSnapshot((snapshot) => {
+      this.setState({members:snapshot.data()})
+     // console.log(snapshot.data())
+      this.loadMembers(snapshot.data().photoUrl,snapshot.data().name)
+    }) }}
+); unsub();})
 
-  };
+const threadsRef = firebase.firestore().collection('campaigns').doc(this.props.match.params.id).collection("threads");
+const unsub2 = threadsRef.onSnapshot((snapshot) => {
+ const data = snapshot.docs.map((doc) => {
+ const vv = (doc.data().title);
+ 
+   this.loadThreads(vv,doc.id)
+}
+); unsub2();})
+    
+};
 
 
 
@@ -97,36 +143,7 @@ class CampaignSingle extends React.Component {
 
       <div className="App">
 
-        <nav className="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
-          <div className="container">
-            <a className="navbar-brand js-scroll-trigger" href="/" style={{ fontSize: 50, fontFamily: "Merienda One" }}>PROTST</a>
-            <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-
-
-              <i className="fa fa-bars"></i>
-            </button>
-            <div className="collapse navbar-collapse" id="navbarResponsive">
-              <ul className="navbar-nav text-uppercase ml-auto">
-                <li className="nav-item">
-                  <a className="nav-link js-scroll-trigger" href="/signin" >I am A Member</a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link js-scroll-trigger" href="/campaigns">Campaigns</a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link js-scroll-trigger" href="#about">About</a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link js-scroll-trigger" href="#team">Team</a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link js-scroll-trigger" href="#contact">Contact</a>
-                </li>
-
-              </ul>
-            </div>
-          </div>
-        </nav>
+      <Navbar/>
         <br /><br />
       
         <section className="page-section">
@@ -136,35 +153,29 @@ class CampaignSingle extends React.Component {
 
               <div className="col-lg-8">
 
-                <h1 className="mt-4">{this.state.campaign.name}</h1>
+                <h1 className="mt-4" style={{fontFamily: "Work Sans"}}>{this.state.campaign.name}</h1>
 
-                <p className="lead">
-                  by &nbsp;
+              <tr><td style={{width:"30%"}}><p className="lead">
+                <strong> By</strong>  &nbsp;
           <a href="#" style={{textDecoration:"none"}}>{this.state.owner.name}</a>
-                </p>
+                </p></td>  
+    <td style={{width:"30%"}}> <p className="lead"><strong>  Supporters: </strong> {this.state.supporters}</p></td>
+    
+    <td style={{width:"20%"}}><button className="btn btn-info">JOIN</button></td></tr> 
 
                 <hr />
-
-                <p>Posted on January 1, 2019 at 12:00 PM</p>
-
-                <hr />
-
                 <img className="campaign-img" src={this.state.campaign.photoUrl} alt="" />
-
                 <hr />
-
                 <p>{this.state.campaign.description}</p>
-
                 <hr />
-
                 <div className="card my-4">
-                  <h5 className="card-header">Leave a Comment:</h5>
+                  <h5 className="card-header  bg-dark text-white">Share your Thoughts:</h5>
                   <div className="card-body">
                   <div className="form-group">
-                        <input type="text" id="title" className="form-control" />
+                        <input type="text" id="title" className="form-control" placeholder="What are your opinions?"/>
                       </div>
                       <div className="form-group">
-                        <textarea id="comments" className="form-control" rows="3"></textarea>
+                        <textarea id="comments" className="form-control" rows="3" placeholder="Description"></textarea>
                       </div>
                       <button type="submit" onClick={()=>this.addComment()} className="btn btn-primary">Submit</button>
                    <br/>
@@ -172,22 +183,29 @@ class CampaignSingle extends React.Component {
                   </div>
 
                 </div>
+                {/* {  this.state.members.map(data=>
+      {
+        console.log(data)
+      })} */}
                 {this.state.comments.map(data => {
 if(data.userId == this.state.user.uid){
+
                   return (
                     <div className="media mb-4">
-                      <img className="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="" />
+                      <img className="d-flex mr-3 rounded-circle"  src={data.pic} width="50" height="50" alt="" />
                       <div className="media-body">
                         <h5 className="mt-0">{data.title}</h5>
                         {data.description}
                       </div>
-                      <button className="btn btn-danger" onClick={()=>this.deleteComment()}>Delete</button>
+                      <button className="btn btn-danger" onClick={()=>this.deleteComment(data.id)}>Delete</button>
                     </div>
                   );
-}else{
+}else {
+ 
   return (
+    
     <div className="media mb-4">
-      <img className="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="" />
+      <img className="d-flex mr-3 rounded-circle"  src={data.pic} width="50" height="50" alt="" />
       <div className="media-body">
         <h5 className="mt-0">{data.title}</h5>
         {data.description}
@@ -197,25 +215,36 @@ if(data.userId == this.state.user.uid){
   );
 }
                 })}
-
-
-
-
-
               </div>
-              {/* <Sidebar 
-      type="c" 
-      campId={this.props.match.params.id}  /> */}
+            
               <div className="col-md-4">
-                <div className="card my-4">
-                  <div className="card-header">Create a Video Group</div>
-                  <div className="card-body">
+                <div className="card-dark">
+                  <h3 className="card-header bg-dark text-light" style={{borderBottomColor: "#FED136"}}>Join The Video Group</h3>
+                  
+                  <div className="card-body bg-dark">
                     <div className="input-group">
-                      <p className="text-muted">Click below to join the video conference</p>
+                      <p className="text-white">Click below to join the video conference</p>
                       <a className="btn btn-warning" href={"/videoGroup/" + this.state.campaign.name} >Join Now!</a>
                     </div>
                   </div>
-                </div></div>
+                </div>
+                <hr/>
+                <div class="card-dark">
+              <h3 class="card-header bg-dark text-light" style={{borderBottomColor: "#FED136"}}>Campaign Members
+              </h3>
+              <div class="card-body bg-dark text-white" id="mem">
+            
+                </div>
+            </div>
+            <hr/>
+                <div class="card-dark">
+              <h3 class="card-header bg-dark text-light" style={{borderBottomColor: "#FED136"}}>Campaign Threads
+              </h3>
+              <div class="card-body bg-dark text-white" id="threads">
+            
+                </div>
+            </div>
+                </div>
             </div>
           </div>
 

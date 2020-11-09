@@ -55,7 +55,7 @@ function SignIn() {
   const handleLogin = () => {
     clearErrors();
 
-    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+    firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION)
       .then(function () {
         fire
           .auth()
