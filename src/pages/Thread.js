@@ -12,7 +12,7 @@ class Thread extends React.Component {
       
       super(props);
         
-      this.state = {threadCreated : [],posts:[], user:[],comments:[]};
+      this.state = {threadCreated : [],posts:[], user:[],comments:[],isOwner:null};
      
    
       }
@@ -50,7 +50,14 @@ class Thread extends React.Component {
 
  
   }
-
+  deleteThread()
+  {
+   var delete_query =  firebase.firestore().collection('campaigns').doc(this.props.match.params.camp).collection("threads").doc(this.props.match.params.thread).delete().then(()=>
+   {
+     window.location.replace("/viewCampaign/"+this.props.match.params.camp)
+   });
+     
+  }
   deleteComment(id)
   {
     var delete_query =  firebase.firestore().collection('campaigns').doc(this.props.match.params.camp).collection("threads").doc(this.props.match.params.thread).collection("comments").doc(id).delete();
@@ -62,8 +69,9 @@ class Thread extends React.Component {
       {
         var user = localStorage.getItem("isThere");
         if(user =="yes"){
-        document.getElementById("threads").innerHTML +=("# <a style='text-decoration: none' href='/thread/"+this.props.match.params.camp + "/"  + id+"'<p class='lead'>"+ title+"</p>");
-        }
+         if( document.getElementById("threads"))
+        {document.getElementById("threads").innerHTML +=("# <a style='text-decoration: none' href='/thread/"+this.props.match.params.camp + "/"  + id+"'<p class='lead'>"+ title+"</p>");
+        }}
       }
 
       getMembers(url)
@@ -91,9 +99,27 @@ class Thread extends React.Component {
         const unsubscribe = threadsRef.doc(this.props.match.params.thread).onSnapshot((snapshot) => {
           const data = snapshot.data()
           this.setState({ threadCreated: snapshot.data() });
+         
+const ownerRef = firebase.firestore().collection('users');
+if(this.state.threadCreated && this.state.threadCreated.userId){
+ownerRef.doc(this.state.threadCreated.userId).onSnapshot((snapshot) => {
+
+  const data = snapshot.data()
+if(snapshot.id == this.state.user.uid)
+{
+  this.setState({isOwner:true})
+ //console.log("yes")
+}
+
+   // console.log("Owner", );
+}
+   
+)}
+          
         }
 
         )
+        
         const membersRef = firebase.firestore().collection('campaigns').doc(this.props.match.params.camp).collection("members");
         const unsub = membersRef.onSnapshot((snapshot) => {
          const data = snapshot.docs.map((doc) => {
@@ -116,7 +142,7 @@ const unsub2 = threadRef.onSnapshot((snapshot) => {
 }
 
 ); unsub2();})
-           
+
 const commentsRef = firebase.firestore().collection('campaigns').doc(this.props.match.params.camp).collection("threads").doc(this.props.match.params.thread).collection("comments").orderBy('created', 'desc');
 commentsRef.onSnapshot((snapshot) => {
 
@@ -130,12 +156,12 @@ commentsRef.onSnapshot((snapshot) => {
   //console.log("All data in 'books' collection", data);
 }
 )
-         
+
     };
       
    
  render(){
-
+if(this.state.threadCreated){
   return (
     
     <div className="App">
@@ -148,12 +174,21 @@ commentsRef.onSnapshot((snapshot) => {
     <div className="row">
   <div className="col-lg-8">
       <div className="row" style={{margin:20}}>
-<div className="col-lg-3">
+<div className="col-lg-3" style={{paddingBottom:20}}>
     <img src={this.state.threadCreated.photoUrl} className="rounded-circle img-fluid"/>
  
   </div>
  <div className="col-md-9">
- <h2 class=" text-uppercase">{this.state.threadCreated.title}</h2>
+ {this.state.isOwner ?(
+   <span>
+ <tr ><td style={{width:"40%"}}> <a href={"/editThread/"+this.props.match.params.camp+"/"+this.props.match.params.thread} style={{textDecoration:"none"}}><button className="btn btn-info"  >Edit Thread</button></a></td> 
+
+<td style={{width:"40%"}}><button className="btn btn-danger" onClick={()=>this.deleteThread()} >Delete Thread</button></td> </tr>
+<hr/>
+   <tr ><td style={{width:"60%"}}>
+ <h2 class=" text-uppercase">{this.state.threadCreated.title}</h2></td></tr> 
+ </span>
+ ):(<h2 class=" text-uppercase">{this.state.threadCreated.title}</h2>)}
  <p className="lead">{this.state.threadCreated.description}</p>
  </div>
  <div className="col-md-12">
@@ -273,7 +308,10 @@ if(data.userId == this.state.user.uid){
   </footer>
     </div>
   );
+}else{
+  return null;
 }
+ }
 }
 
 

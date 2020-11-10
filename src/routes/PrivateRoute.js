@@ -14,7 +14,7 @@ const PrivateRoute  = ({component: RouteComponent, ...rest}) => {
     
 
 //console.log("path",history.location.pathname)
-if((history.location.pathname=="/profile" && isLogged == null) || (history.location.pathname=="/createCampaign" && isLogged == null) || (history.location.pathname.includes("/viewCampaign") && isLogged == null) 
+if((history.location.pathname.includes("/profile") && isLogged == null) ||(history.location.pathname.includes("/viewProfile") && isLogged == null) || (history.location.pathname.includes("/editCampaign") && isLogged == null)  || (history.location.pathname.includes("/editThread") && isLogged == null) || (history.location.pathname.includes("/createThread") && isLogged == null) || (history.location.pathname.includes("/createCampaign") && isLogged == null) || (history.location.pathname.includes("/viewCampaign") && isLogged == null) 
 || (history.location.pathname.includes("/videoGroup") && isLogged == null) || (history.location.pathname.includes("/thread") && isLogged == null))
 {
     return(

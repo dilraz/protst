@@ -29,7 +29,8 @@ class CreateCampaign extends React.Component {
     let title = document.getElementById("title").value;
     let location = document.getElementById("location").value;
     let desc = document.getElementById("description").value;
-    let picture = document.getElementById("poster").files[0];
+    let index = document.getElementById("poster").files.length
+    let picture = document.getElementById("poster").files[index-1];
     let id = this.state.current.uid
 if(picture){
     let ref = 'campaigns/' + this.state.rand
@@ -56,6 +57,7 @@ if(picture){
            description: desc,
            photoUrl:url,
            name:title,
+           location:location,
            created: firebase.firestore.Timestamp.now()
            
          }).then(()=>

@@ -7,21 +7,22 @@ import Navbar from '../Navbar';
 class CampaignSingle extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = { campaign: [], comments: [],owner:[] ,joined:null,user:[],members: [],supporters:0,isOwner:false}
   }
     
 
-    loadMembers(url,name)
+    loadMembers(id,url,name)
     {
      
-      document.getElementById("mem").innerHTML +=("<span><img src="+url+" width='70' height='70' style='margin:10px;border-radius:50px'/> </span>");
+      document.getElementById("mem").innerHTML +=("<span><a  style='text-decoration: none'  href='/viewProfile/"+id+"'><img src="+url+" width='70' height='70' style='margin:10px;border-radius:50px'/> </a></span>");
     }
 
+    
     loadThreads(title,id)
     {
       document.getElementById("threads").innerHTML +=("# <a style='text-decoration: none' href='/thread/"+this.props.match.params.id + "/"  + id+"'<p class='lead'>"+ title+"</p>");
     }
+
 
   addComment()
   {
@@ -48,7 +49,6 @@ class CampaignSingle extends React.Component {
        document.getElementById("comments").value="";
      }
        
-       // console.log("Owner", );
     }
     )
   }
@@ -148,7 +148,7 @@ this.checkJoinCampaign();
       this.setState({ campaign: snapshot.data() });
    
       //  console.log("All data in 'books' collection", this.state.campaign);
-   
+   if(this.state.campaign && this.state.campaign.owner_id){
     const ownerRef = firebase.firestore().collection('users');
     ownerRef.doc(this.state.campaign.owner_id).onSnapshot((snapshot) => {
 
@@ -164,6 +164,7 @@ this.checkJoinCampaign();
     }
     )
   }
+}
   )
     const commentsRef = firebase.firestore().collection('campaigns').doc(this.props.match.params.id).collection("posts").orderBy('created', 'desc');
     commentsRef.onSnapshot((snapshot) => {
@@ -178,7 +179,7 @@ this.checkJoinCampaign();
       //console.log("All data in 'books' collection", data);
     }
     )
-    const membersRef = firebase.firestore().collection('campaigns').doc(this.props.match.params.id).collection("members");
+  const membersRef = firebase.firestore().collection('campaigns').doc(this.props.match.params.id).collection("members");
    const unsub = membersRef.onSnapshot((snapshot) => {
     const data = snapshot.docs.map((doc) => {
       if(doc){
@@ -189,7 +190,7 @@ this.checkJoinCampaign();
     const userR = firebase.firestore().collection('users').doc(vv).onSnapshot((snapshot) => {
       this.setState({members:snapshot.data()})
      // console.log(snapshot.data())
-      this.loadMembers(snapshot.data().photoUrl,snapshot.data().name)
+      this.loadMembers(snapshot.id,snapshot.data().photoUrl,snapshot.data().name)
     }) }}
     }
 ); unsub();
@@ -206,16 +207,8 @@ const unsub2 = threadsRef.onSnapshot((snapshot) => {
 ); unsub2();})
 };
 
-
-
-
-
-
-
-
-
   render() {
-
+if(this.state.campaign){
     return (
 
       <div className="App">
@@ -232,18 +225,25 @@ const unsub2 = threadsRef.onSnapshot((snapshot) => {
 
                 <h1 className="mt-4" style={{fontFamily: "Work Sans"}}>{this.state.campaign.name}</h1>
 
-              <tr><td style={{width:"30%"}}><p className="lead">
-                <strong> By</strong>  &nbsp;
+              <tr><td style={{width:"20%"}}><p className="lead">
+                <strong> By:</strong>  &nbsp;
           <a href="#" style={{textDecoration:"none"}}>{this.state.owner.name}</a>
                 </p></td>  
-    <td style={{width:"30%"}}> <p className="lead"><strong>  Supporters: </strong> {this.state.supporters}</p></td>
-    
+                <td style={{width:"33%"}}><p className="lead">
+                <strong>Location:</strong>  &nbsp;
+          <a href="#" style={{textDecoration:"none"}}>{this.state.campaign.location}</a>
+                </p></td> 
+    <td style={{width:"33%"}}> <p className="lead"><strong>  Supporters: </strong> {this.state.supporters}</p></td>
+    </tr> 
+      <tr> 
     <td style={{width:"20%"}}>
       {this.state.joined ? (<button className="btn btn-danger" onClick={()=>this.leave()}>LEAVE</button>):(<button id="bt" onClick={()=>this.join()} className="btn btn-info">JOIN</button>)}
     
       
-      </td></tr> 
-      <tr> <td style={{width:"40%"}}>{this.state.isOwner ? (<button className="btn btn-danger" onClick={()=>this.deleteCampaign()} >Delete Campaign</button>) :(null)}</td> </tr>
+      </td>
+      <td style={{width:"40%"}}>{this.state.isOwner ? (<a href={"/editCampaign/"+this.props.match.params.id} style={{textDecoration:"none"}}><button className="btn btn-info"  >Edit Campaign</button></a>) :(null)}</td> 
+
+      <td style={{width:"30%"}}>{this.state.isOwner ? (<button className="btn btn-danger" onClick={()=>this.deleteCampaign()} >Delete Campaign</button>) :(null)}</td> </tr>
 
                 <hr />
                 <img className="campaign-img" src={this.state.campaign.photoUrl} alt="" />
@@ -321,8 +321,10 @@ if(data.userId == this.state.user.uid){
             <hr/>
                 <div class="card-dark">
               <h3 class="card-header bg-dark text-light" style={{borderBottomColor: "#FED136"}}>Campaign Threads
-              </h3>
-              <div class="card-body bg-dark text-white" id="threads">
+              <a style={{textDecoration:"none"}} href={"/createThread/"+ this.props.match.params.id}>&emsp;<span className="lead">Add New Thread</span></a>
+          </h3>
+              <div class="card-body bg-dark text-white">
+                   <div id="threads"></div>
             
                 </div>
             </div>
@@ -375,8 +377,11 @@ if(data.userId == this.state.user.uid){
     );
 
 
+  }else{
+    return(null)
   }
-
+  
+  }
 }
 
 

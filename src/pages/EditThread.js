@@ -7,7 +7,7 @@ import { AuthContext } from '../Auth';
 
 
 
-class CreateThread extends React.Component {
+class EditThread extends React.Component {
     
   constructor(props) {
       
@@ -20,8 +20,9 @@ class CreateThread extends React.Component {
       getCampaigns(id,title)
       {
         document.getElementById("camps").innerHTML +=("# <a style='text-decoration: none' href='/viewCampaign/"  + id+"'<p class='lead'>"+ title+"</p>");
+  
       }
-      
+
       handleSubmit()
       {
 
@@ -29,58 +30,70 @@ class CreateThread extends React.Component {
     let desc = document.getElementById("description").value;
     let index = document.getElementById("poster").files.length
     let picture = document.getElementById("poster").files[index-1];
-    let id = this.state.current.uid
-   let ca= this.props.match.params.camp
-
-if(picture){
-    let ref = 'threads/' + this.state.rand
-    if(title=="" || desc==""){
-        document.getElementById("error").innerText="Please fill All The Above Fields !"
-      }else{
-     let storageRef = firebase.storage().ref().child('threads/' + this.state.rand)
-     let storageTask = storageRef.put(picture)
-     storageTask.on('state_changed', function(snapshot){
-    }, function(error) {
-        // Handle unsuccessful uploads
-      }, function() {
-        storageRef.getDownloadURL()
-        .then((url) => {
-            console.log("url", url)
-      const userRef = firebase.firestore().collection('users');
-       
-           
-         firebase.firestore().collection('campaigns').doc(ca).collection("threads").doc().set({
-           description: desc,
-           photoUrl:url,
-           title:title,
-           userId:id
-           
-         }).then(()=>
-         {
-           window.location.replace("/viewCampaign/"+ca)
-         })
-         
-      document.getElementById("error").innerText="Thread added successfully!"
-      document.getElementById("poster").value=null;
-         document.getElementById("title").value="";
-         document.getElementById("description").value="";
-  
-       
-          
-      
-        }
-        )}
-        
-      
-        )
+    let cid = this.props.match.params.cid;
+    let tid = this.props.match.params.tid;
+    //console.log(title,desc)
+    if (title == "") {
+      title = this.state.threadCreated.title;
+    }
+    if (desc == "") {
+        desc = this.state.threadCreated.description;
       }
-      
-    
-  
-}else{
-    document.getElementById("error").innerText="Thread Picture can't be empty!";
+let final;
+      if(this.state.threadCreated.photoUrl.toString().includes("protst.appspot")){
+     let name  = (this.state.threadCreated.photoUrl).toString().split("%2F")
+     let name2 = (name[1]).toString().split("?")
+        
+    final=name2[0];
+      }
+      else{
+final  = this.state.rand
+      }
+
+    let storage = firebase.storage().ref().child('threads/' + final);
+    let id = this.state.current.uid;
+if(picture){
+ 
+  let uploadTask = storage.put(picture)
+  uploadTask.on('state_changed', function(snapshot){
+  }, function(error) {
+      // Handle unsuccessful uploads
+    }, function() {
+     
+      storage.getDownloadURL()
+        .then((url) => {
+          if(url){
+             // window.alert(title+desc)
+          firebase.firestore().collection("campaigns").doc(cid).collection("threads").doc(tid).update({
+            "title": title,
+            "description": desc,
+            "photoUrl": url
+          }
+          ).then(()=>
+          {
+            window.location.replace("/thread/"+cid+ "/"+tid)
+          })
+        }
+      }).catch(err => {
+           // console.log(err.code);
+        })
+    })
+}else
+{
+  firebase.firestore().collection("campaigns").doc(cid).collection("threads").doc(tid).update({
+    "title": title,
+    "description": desc,
+  }
+  ).then(()=>
+  {
+    window.location.replace("/thread/"+cid+ "/"+tid)
+         
+  })
 }
 
+   
+    
+    document.getElementById("error").innerText = "Thread Updated Successfully!"
       }
     componentDidMount() 
     {
@@ -90,14 +103,21 @@ if(picture){
             }
         })
         const campaignRef = firebase.firestore().collection('campaigns');
-        campaignRef.doc(this.props.match.params.camp).onSnapshot((snapshot) => {
+        campaignRef.doc(this.props.match.params.cid).onSnapshot((snapshot) => {
     
           const data = snapshot.data()
     
           this.setState({ campaign: snapshot.data() });
    
         })
-        
+        const threadRef = firebase.firestore().collection('campaigns').doc(this.props.match.params.cid).collection("threads");
+        threadRef.doc(this.props.match.params.tid).onSnapshot((snapshot) => {
+    
+          const data = snapshot.data()
+    
+          this.setState({ threadCreated: snapshot.data() });
+   
+        })
         const campaignsRef = firebase.firestore().collection('campaigns');
         const unsub = campaignsRef.onSnapshot((snapshot) => {
          
@@ -107,7 +127,9 @@ if(picture){
          
          );
          unsub();
+         //console.log("All data in 'books' collection", data);
         
+         
      
      })
       
@@ -115,7 +137,7 @@ if(picture){
       
    
  render(){
-
+if(this.state.threadCreated){
   return (
     
     <div className="App">
@@ -128,35 +150,37 @@ if(picture){
     <div className="row">
     <div className="col-lg-8">
  <div className="col-md-8">
- <h1 className="mt-4" style={{fontFamily: "Work Sans"}}>Add A New Thread</h1>
+ <h1 className="mt-4" style={{fontFamily: "Work Sans"}}>Edit Your Thread</h1>
 
 <p className="lead">Please fill all the fields below correctly!</p>
     </div>
  <br/>
  <div id="editForm">
 <fieldset>
-  
-<div class="form-group">
-    <div class="col-md-8">
-      <div className="form-group" >
-        <label for="campaign">Campaign: </label>
-        <input type="text" class="form-control" id="campaign" value={this.state.campaign.name} disabled/>
-      </div>
-    </div>
-    </div>
   <div class="form-group">
     <div class="col-md-8">
       <div className="form-group" >
-        <label for="title">Title: </label>
-        <input type="text" class="form-control" id="title" placeholder="Thread Title" />
+        <label for="name">Campaign: </label>
+        <input type="text" class="form-control" id="name" value={this.state.campaign.name} disabled/>
       </div>
     </div>
 
   </div>
   <div class="form-group">
+    <div class="col-md-8">
+      <div className="form-group" >
+        <label for="title">Title: </label>
+        <input type="text" class="form-control" id="title" defaultValue={this.state.threadCreated.title} />
+      </div>
+    </div>
+
+  </div>
+  
+
+  <div class="form-group">
   <div class="col-md-8">
     <label for="description">Description: </label>
-    <textarea class="form-control" id="description" rows="5" placeholder="Thread Description"></textarea>
+    <textarea class="form-control" id="description" rows="5"  defaultValue={this.state.threadCreated.description}></textarea>
   </div>
 </div>
   <div class="form-group">
@@ -242,8 +266,11 @@ Protst.org is web based and designed to also be available on mobile platforms as
   </footer>
     </div>
   );
+}else{
+    return null;
 }
+ }
 }
 
 
-export default CreateThread;
+export default EditThread;

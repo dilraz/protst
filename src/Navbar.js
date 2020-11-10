@@ -13,7 +13,15 @@ class Navbar  extends React.Component  {
         }
 
 
-
+        componentDidMount()
+        {
+          if(localStorage.getItem("isThere") =="yes")
+          {
+              this.setState({user:true})
+          }else{
+            this.setState({user:false})
+          }
+        }
     handleNavCollapse ()
     {
      
@@ -28,18 +36,16 @@ class Navbar  extends React.Component  {
     } 
      handleLogout = () => {
         localStorage.removeItem("isThere")
-        fire.auth().signOut();
+        fire.auth().signOut().then(()=>
+        {
+          window.location.replace("/login");
+        });
         
       }
   
   render(){
      // console.log(localStorage.getItem("isThere"))
-    if(localStorage.getItem("isThere") =="yes")
-    {
-        this.state.user =true;
-    }else{
-        this.state.user =false;
-    }
+    
 return(
 
 <nav className="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
@@ -60,12 +66,6 @@ return(
       <li className="nav-item">
         <a className="nav-link js-scroll-trigger" href="/about">About</a>
       </li>
-      <li className="nav-item">
-      <a className="nav-link js-scroll-trigger" href="#team">Team</a>
-    </li>
-    <li className="nav-item">
-    <a className="nav-link js-scroll-trigger" onClick={()=>this.handleLogout()}>LOUT</a>
-        </li>
     <li className="nav-item">
    
     {this.state.user ? (

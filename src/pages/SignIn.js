@@ -313,7 +313,11 @@ function SignIn() {
 
   const handleLogout = () => {
    
-    fire.auth().signOut();
+    fire.auth().signOut().then(()=>
+    {
+      window.location.replace("/login");
+    });
+    
   
   }
 
