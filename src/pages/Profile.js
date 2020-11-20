@@ -57,7 +57,7 @@ class Profile extends React.Component {
   {
    // console.log(this.state.totalFriend,this.state.totalPost)
  this.setState({noPost:false})
-document.getElementById("pos").innerHTML+=" <legend>Your Recent Posts:</legend><div class='card-dark' style='margin-top:20px'><h3 class='card-header bg-dark text-light' style='border-bottom: 2px solid #FED136'>"+title+"</h3><div class='card-body bg-dark'> <div class='input-group'><p class='text-white'>"+desc+"</p></div></div></div>"
+document.getElementById("pos").innerHTML+=" <div class='card-dark' style='margin-top:20px'><h3 class='card-header bg-dark text-light' style='border-bottom: 2px solid #FED136'>"+title+"</h3><div class='card-body bg-dark'> <div class='input-group'><p class='text-white'>"+desc+"</p></div></div></div>"
   
 }
 
@@ -357,8 +357,9 @@ const snapshottt = fire.firestore().collectionGroup("comments").where('userId', 
                   </div>
                   <div className="hidDiv"  style={{ display: (showPost ? 'block' : 'none') }}>
                   <br></br>
-                  
+                  {this.state.noPost ? (""):( <legend>Your Recent Posts:</legend>)}
                <div id="pos" className="col-md-12"></div>
+
            {this.state.noPost ? (<img src="https://firebasestorage.googleapis.com/v0/b/protst.appspot.com/o/noPost.jpg?alt=media&token=c974d3de-c33f-4625-b28d-be6aa597e265" class="img-fluid"/>):("")}
             
                   </div>
@@ -405,6 +406,7 @@ const snapshottt = fire.firestore().collectionGroup("comments").where('userId', 
                          
                           <br />
                           <p id="message"></p>
+                          <br/> <a href="#"> Reset Password</a>
                         </div>
                       </div>
                     </div>
@@ -434,44 +436,26 @@ const snapshottt = fire.firestore().collectionGroup("comments").where('userId', 
           </div>
 
         </section>
-        <footer className="footer">
-          <div className="container">
-            <div className="row align-items-center">
-              <div className="col-md-4">
-                <span className="copyright">Copyright &copy; Your Website 2019</span>
-              </div>
-              <div className="col-md-4">
-                <ul className="list-inline social-buttons">
-                  <li className="list-inline-item">
-                    <a href="#something">
-                      <i className="fa fa-twitter"></i>
-                    </a>
-                  </li>
-                  <li className="list-inline-item">
-                    <a href="#something">
-                      <i className="fa fa-facebook-f"></i>
-                    </a>
-                  </li>
-                  <li className="list-inline-item">
-                    <a href="#something">
-                      <i className="fa fa-linkedin-in"></i>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <div className="col-md-4">
-                <ul className="list-inline quicklinks">
-                  <li className="list-inline-item">
-                    <a href="#something">Privacy Policy</a>
-                  </li>
-                  <li className="list-inline-item">
-                    <a href="#something">Terms of Use</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </footer>
+        <footer className="footer" >
+<div className="container">
+<div className="row align-items-center">
+  <div className="col-md-4">
+    <span className="copyright">Copyright &copy; PROTST.ORG 2020</span>
+  </div>
+ 
+  <div className="col-md-8">
+    <ul className="list-inline quicklinks">
+      <li className="list-inline-item">
+       Standardizing the way of protest around the world.&emsp;
+      </li>
+      <li className="list-inline-item">
+       <a href="/about" style={{textDecoration:"none"}}>Read More About Us</a>
+      </li>
+    </ul>
+  </div>
+</div>
+</div>
+</footer>
 
       </div>
 

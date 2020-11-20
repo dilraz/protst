@@ -3,6 +3,7 @@ import '../App.css';
 import firebase from 'firebase';
 import '../assets/css/cards.css'
 import Navbar from '../Navbar';
+import {EmailShareButton,FacebookShareButton,TwitterShareButton,EmailIcon,FacebookIcon,TwitterIcon} from "react-share";
 
 
 
@@ -245,6 +246,17 @@ if(data.userId == this.state.user.uid){
          
          <div className="col-md-4">
          <div class="card-dark">
+              <h3 class="card-header bg-dark text-light" style={{borderBottomColor: "#FED136"}}>Share This Thread
+              </h3>
+              <div class="card-body bg-dark text-white" >
+             <td style={{width:"30%"}}><EmailShareButton url={"https://protst.org"+(this.props.location.pathname)} subject={"Sharing Thread: \""+this.state.threadCreated.title+"\" "} body={"Hey! Take a look at this Thread on Protst.org using the link below \n " }><EmailIcon></EmailIcon></EmailShareButton>
+             </td> <td style={{width:"30%"}}><FacebookShareButton url={"https://protst.org"+(this.props.location.pathname)} quote={this.state.threadCreated.title}><FacebookIcon/></FacebookShareButton> 
+             </td> <td style={{width:"30%"}}>    <TwitterShareButton title={"Sharing Thread: \""+this.state.threadCreated.title+"\" "} url={("https://protst.org"+(this.props.location.pathname))}><TwitterIcon></TwitterIcon></TwitterShareButton>
+             </td> 
+                </div>
+            </div>
+            <hr/>
+         <div class="card-dark">
               <h3 class="card-header bg-dark text-light" style={{borderBottomColor: "#FED136"}}>Related Threads
               </h3>
               <div class="card-body bg-dark text-white" id="threads">
@@ -268,44 +280,26 @@ if(data.userId == this.state.user.uid){
          </div>
          </section>
          </div>
-  <footer className="footer">
-    <div className="container">
-      <div className="row align-items-center">
-        <div className="col-md-4">
-          <span className="copyright">Copyright &copy; Your Website 2019</span>
-        </div>
-        <div className="col-md-4">
-          <ul className="list-inline social-buttons">
-            <li className="list-inline-item">
-              <a href="#something">
-                <i className="fa fa-twitter"></i>
-              </a>
-            </li>
-            <li className="list-inline-item">
-              <a href="#something">
-                <i className="fa fa-facebook-f"></i>
-              </a>
-            </li>
-            <li className="list-inline-item">
-              <a href="#something">
-                <i className="fa fa-linkedin-in"></i>
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div className="col-md-4">
-          <ul className="list-inline quicklinks">
-            <li className="list-inline-item">
-              <a href="#something">Privacy Policy</a>
-            </li>
-            <li className="list-inline-item">
-              <a href="#something">Terms of Use</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </footer>
+         <footer className="footer" >
+<div className="container">
+<div className="row align-items-center">
+  <div className="col-md-4">
+    <span className="copyright">Copyright &copy; PROTST.ORG 2020</span>
+  </div>
+ 
+  <div className="col-md-8">
+    <ul className="list-inline quicklinks">
+      <li className="list-inline-item">
+       Standardizing the way of protest around the world.&emsp;
+      </li>
+      <li className="list-inline-item">
+       <a href="/about" style={{textDecoration:"none"}}>Read More About Us</a>
+      </li>
+    </ul>
+  </div>
+</div>
+</div>
+</footer>
     </div>
   );
 }else{

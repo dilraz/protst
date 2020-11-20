@@ -15,7 +15,7 @@ class ViewProfile extends React.Component {
     super(props);
 
    
-    this.state = { userCreated: [], user: [],isFriend:null, friend: [], activities:0,activity:[],totalPost:0,totalFriend:0,totalUsers:0,totalCamps:0}
+    this.state = { userCreated: [], user: [],isFriend:null, friend: [], activities:0,activity:[],totalPost:0,totalFriend:0,totalUsers:0,totalCamps:0,isUser:null}
   }
 
   add(){
@@ -138,7 +138,7 @@ const snapshot3 = fire.firestore().collection("users").doc(this.props.match.para
   componentDidMount() {
     // this.displayFriend();
     //console.log(this.state.activity)
-  
+    this.setState({isUser:false})
     this.setState({totalFriend:0})
     this.setState({totalPost:0})
     this.setState({totalUsers:0})
@@ -170,8 +170,18 @@ const snapshot3 = fire.firestore().collection("users").doc(this.props.match.para
             
           const data = snapshot.data()
           this.setState({ userCreated: snapshot.data() });
+          if(this.state.userCreated)
+          {
+            this.state.userCreated.id = snapshot.id;
+          }
+         
           if(this.state.userCreated && this.state.userCreated.id){
-          this.state.userCreated.id = this.props.match.params.user
+               
+          console.log(this.state.user.uid,this.state.userCreated.id)
+          if(this.state.user.uid==this.state.userCreated.id)
+          {
+             this.setState({isUser:true}) 
+          }
           //this.checkUpload();
         }
         }
@@ -275,8 +285,10 @@ if(this.state.userCreated){
                         <tr> 
                             <td style={{width:"60%"}}><h1>{this.state.userCreated.name}</h1></td>
     <td style={{width:"20%"}}>
-      {this.state.isFriend ? (<button className="btn btn-danger" onClick={()=>this.remove()}>Remove Friend</button>):(<button id="bt" onClick={()=>this.add()} className="btn btn-info">Add Friend</button>)}
-    
+        {this.state.isUser ? (""):(
+            this.state.isFriend ? (<button className="btn btn-danger" onClick={()=>this.remove()}>Remove Friend</button>):(<button id="bt" onClick={()=>this.add()} className="btn btn-info">Add Friend</button>)
+    )}
+      
       
       </td>  </tr>
                         <p>{this.state.userCreated.bio}</p>
@@ -309,44 +321,26 @@ if(this.state.userCreated){
             </div></div></div>
 
         </section>
-        <footer className="footer">
-          <div className="container">
-            <div className="row align-items-center">
-              <div className="col-md-4">
-                <span className="copyright">Copyright &copy; Your Website 2019</span>
-              </div>
-              <div className="col-md-4">
-                <ul className="list-inline social-buttons">
-                  <li className="list-inline-item">
-                    <a href="#something">
-                      <i className="fa fa-twitter"></i>
-                    </a>
-                  </li>
-                  <li className="list-inline-item">
-                    <a href="#something">
-                      <i className="fa fa-facebook-f"></i>
-                    </a>
-                  </li>
-                  <li className="list-inline-item">
-                    <a href="#something">
-                      <i className="fa fa-linkedin-in"></i>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <div className="col-md-4">
-                <ul className="list-inline quicklinks">
-                  <li className="list-inline-item">
-                    <a href="#something">Privacy Policy</a>
-                  </li>
-                  <li className="list-inline-item">
-                    <a href="#something">Terms of Use</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </footer>
+        <footer className="footer" >
+<div className="container">
+<div className="row align-items-center">
+  <div className="col-md-4">
+    <span className="copyright">Copyright &copy; PROTST.ORG 2020</span>
+  </div>
+ 
+  <div className="col-md-8">
+    <ul className="list-inline quicklinks">
+      <li className="list-inline-item">
+       Standardizing the way of protest around the world.&emsp;
+      </li>
+      <li className="list-inline-item">
+       <a href="/about" style={{textDecoration:"none"}}>Read More About Us</a>
+      </li>
+    </ul>
+  </div>
+</div>
+</div>
+</footer>
 
       </div>
 

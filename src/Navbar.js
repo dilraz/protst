@@ -69,7 +69,6 @@ return(
     <li className="nav-item">
    
     {this.state.user ? (
-
 <a className="nav-link js-scroll-trigger" style={{cursor:"pointer"}} onClick = {()=>this.handleLogout()}>Logout</a>
 
 ) : (  

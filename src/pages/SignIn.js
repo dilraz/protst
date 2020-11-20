@@ -7,8 +7,7 @@ import fire from "../fire";
 import Login from '../Login';
 
 function SignIn() {
-
-
+ 
 
   const [name, setName] = useState('');
   const [id, setId] = useState('');
@@ -98,14 +97,13 @@ function SignIn() {
     var provider = new firebase.auth.GoogleAuthProvider();
     fire.auth().signInWithPopup(provider).then(function (result) {
       // This gives you a Google Access Token. You can use it to access the Google API.
-      fire.auth().sendSignInLinkToEmail(result.user.email);
+     // fire.auth().sendSignInLinkToEmail(result.user.email);
       var token = result.credential.accessToken;
       // The signed-in user info.
       var user = result.user;
       
-     
       var clientToken = user.getIdToken();
-      fire.auth().verifyIdToken(clientToken)
+      firebase.auth().verifyIdToken(clientToken)
         .then(function (decodedToken) {
           var uid = decodedToken.uid;
           
@@ -138,15 +136,15 @@ function SignIn() {
           }
         })
       )
-      .catch(function (error) {
+      .catch(function(error) {
         // Handle Errors here.
         var errorCode = error.code;
+        console.log(errorCode);
+        //alert(errorCode);
+      
         var errorMessage = error.message;
-        // The email of the user's account used.
-        var email = error.email;
-        // The firebase.auth.AuthCredential type that was used.
-        var credential = error.credential;
-        // ...
+        console.log(errorMessage);
+       // alert(errorMessage);
       });
 
   }
@@ -154,7 +152,7 @@ function SignIn() {
   const handleFacebook = () => {
     var provider = new firebase.auth.FacebookAuthProvider();
     fire.auth().signInWithPopup(provider).then(function (result) {
-      fire.auth().sendSignInLinkToEmail(result.user.email);
+    //  fire.auth().sendSignInLinkToEmail(result.user.email);
       var token = result.credential.accessToken;
       // The signed-in user info.
       var user = result.user;
@@ -312,7 +310,7 @@ function SignIn() {
   }
 
   const handleLogout = () => {
-   
+   localStorage.setItem("isThere",null)
     fire.auth().signOut().then(()=>
     {
       window.location.replace("/login");

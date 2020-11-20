@@ -3,6 +3,7 @@ import React from 'react';
 import '../App.css';
 import fire from "../fire"
 import Navbar from '../Navbar';
+import {EmailShareButton,FacebookShareButton,TwitterShareButton,EmailIcon,FacebookIcon,TwitterIcon} from "react-share";
 
 class CampaignSingle extends React.Component {
   constructor(props) {
@@ -237,8 +238,10 @@ if(this.state.campaign){
     </tr> 
       <tr> 
     <td style={{width:"20%"}}>
-      {this.state.joined ? (<button className="btn btn-danger" onClick={()=>this.leave()}>LEAVE</button>):(<button id="bt" onClick={()=>this.join()} className="btn btn-info">JOIN</button>)}
-    
+      {this.state.isOwner ? (null):(
+      this.state.joined ? (<button className="btn btn-danger" onClick={()=>this.leave()}>LEAVE</button>):(<button id="bt" onClick={()=>this.join()} className="btn btn-info">JOIN</button>)
+     
+      )}
       
       </td>
       <td style={{width:"40%"}}>{this.state.isOwner ? (<a href={"/editCampaign/"+this.props.match.params.id} style={{textDecoration:"none"}}><button className="btn btn-info"  >Edit Campaign</button></a>) :(null)}</td> 
@@ -300,6 +303,17 @@ if(data.userId == this.state.user.uid){
               </div>
             
               <div className="col-md-4">
+              <div class="card-dark">
+              <h3 class="card-header bg-dark text-light" style={{borderBottomColor: "#FED136"}}>Share This Campaign
+              </h3>
+              <div class="card-body bg-dark text-white" >
+             <td style={{width:"30%"}}><EmailShareButton url={"https://protst.org"+(this.props.location.pathname)} subject={"Sharing Campaign: \""+this.state.campaign.name+"\" "} body={"Hey! Take a look at this campaign on Protst.org using the link below \n " }><EmailIcon></EmailIcon></EmailShareButton>
+             </td> <td style={{width:"30%"}}><FacebookShareButton url={"https://protst.org"+(this.props.location.pathname)} quote={this.state.campaign.name}><FacebookIcon/></FacebookShareButton> 
+             </td> <td style={{width:"30%"}}>    <TwitterShareButton title={"Sharing Campaign: \""+this.state.campaign.name+"\" "} url={("https://protst.org"+(this.props.location.pathname))}><TwitterIcon></TwitterIcon></TwitterShareButton>
+             </td> 
+                </div>
+            </div>
+            <hr/>
                 <div className="card-dark">
                   <h3 className="card-header bg-dark text-light" style={{borderBottomColor: "#FED136"}}>Join The Video Group</h3>
                   
@@ -333,44 +347,26 @@ if(data.userId == this.state.user.uid){
           </div>
 
         </section>
-        <footer className="footer">
-          <div className="container">
-            <div className="row align-items-center">
-              <div className="col-md-4">
-                <span className="copyright">Copyright &copy; Your Website 2019</span>
-              </div>
-              <div className="col-md-4">
-                <ul className="list-inline social-buttons">
-                  <li className="list-inline-item">
-                    <a href="#something">
-                      <i className="fa fa-twitter"></i>
-                    </a>
-                  </li>
-                  <li className="list-inline-item">
-                    <a href="#something">
-                      <i className="fa fa-facebook-f"></i>
-                    </a>
-                  </li>
-                  <li className="list-inline-item">
-                    <a href="#something">
-                      <i className="fa fa-linkedin-in"></i>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-              <div className="col-md-4">
-                <ul className="list-inline quicklinks">
-                  <li className="list-inline-item">
-                    <a href="#something">Privacy Policy</a>
-                  </li>
-                  <li className="list-inline-item">
-                    <a href="#something">Terms of Use</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </footer>
+        <footer className="footer" >
+<div className="container">
+<div className="row align-items-center">
+  <div className="col-md-4">
+    <span className="copyright">Copyright &copy; PROTST.ORG 2020</span>
+  </div>
+ 
+  <div className="col-md-8">
+    <ul className="list-inline quicklinks">
+      <li className="list-inline-item">
+       Standardizing the way of protest around the world.&emsp;
+      </li>
+      <li className="list-inline-item">
+       <a href="/about" style={{textDecoration:"none"}}>Read More About Us</a>
+      </li>
+    </ul>
+  </div>
+</div>
+</div>
+</footer>
 
       </div>
 
